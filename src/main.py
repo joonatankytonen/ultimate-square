@@ -96,6 +96,14 @@ def start_screen():
                 if start_button.collidepoint(x, y):
                     running = False  # Siirrytään peliin
 
+
+# Ruoka muuttujat
+foodColor=(255,0,0)
+foodSize=15
+ruokaOlemassa = 0
+new_food = None
+
+
 # kutsu aloitusnäyttöä
 start_screen()
 
@@ -115,11 +123,18 @@ player_speed = 5
 player_variable_x=0 # Tämä on pelaajan muuttuvat x ja y positiot jotka muuttavat oikeaa x ja y:tä
 player_variable_y=0 # Tämä on pelaajan muuttuvat x ja y positiot jotka muuttavat oikeaa x ja y:tä
 
+
+
 running = True
 game_over = False
+
 while running:
     screen.fill((255, 255, 255))  # Täytetään näyttö valkoiseksi
     pygame.draw.rect(screen, (0, 0, 0), (0, 0, WIDTH, HEIGHT), 10) # Piirretään reunat mustaksi
+
+    # Piirrä pelaaja
+    player = pygame.draw.rect(screen, player_color, (player_xPosition, player_yPosition, player_size, player_size))
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -142,13 +157,25 @@ while running:
           player_variable_x = 0
           player_variable_y = player_speed
 
+        # Jos ruokaa ei ole spawnaa yksi.
+        if ruokaOlemassa == 0:
+          x = random.randint(50, WIDTH-50)
+          y = random.randint(50, HEIGHT-50)
+          new_food = pygame.Rect(x,y,foodSize,foodSize)
+          ruokaOlemassa = 1
+        # Jos pelaaja osuu ruokaan poistaa se aikaisemman ruoan ja spawnaa uuden.
+        if player.colliderect(new_food):
+          print("syöty")
+          ruokaOlemassa = 0
+
         # Tarkistetaan, tuleeko törmäyksiä seinien kanssa, jos tulee, peli loppuu=True
         if player_xPosition <= 10 or player_xPosition + player_size >= WIDTH - 10 or player_yPosition <= 10 or player_yPosition + player_size >= HEIGHT - 10:
             game_over = True
     
-    # Piirrä pelaaja
-    pygame.draw.rect(screen, player_color, (player_xPosition, player_yPosition, player_size, player_size))
-
+    # Jos new_food True niin piirrä ruoka näytölle.
+    if new_food:
+       pygame.draw.rect(screen, foodColor, new_food)
+    
     
     # Piirrä teksti ruudulle (esimerkiksi ylhäällä)
     screen.blit(text_left, ( 20, 20))  # Teksti keskitettynä
