@@ -108,7 +108,7 @@ def start_screen():
           running = False
     
 # Ruoka muuttujat
-foodColor=(255,0,0)
+foodColor=(254, 141, 77)
 foodSize=15
 ruokaOlemassa = 0
 new_food = None
