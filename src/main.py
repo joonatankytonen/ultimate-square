@@ -75,11 +75,19 @@ def start_screen():
       
     # START-nappula
     start_button = pygame.Rect(WIDTH - 255, button_y, 100, 50)
-    pygame.draw.rect(screen, (0, 255, 0), start_button)
+    pygame.draw.rect(screen, (0, 255, 0), start_button, border_radius=15)
     start_text = font.render("START", True, (0, 0, 0))
     text_x = start_button.x + (start_button.width - start_text.get_width()) // 2
     text_y = start_button.y + (start_button.height - start_text.get_height()) // 2
     screen.blit(start_text, (text_x, text_y))
+    
+    # OHJEET-nappula
+    ohjeet_button = pygame.Rect(WIDTH - 255, button_y + 60, 100, 50)
+    pygame.draw.rect(screen, (0, 255, 0), ohjeet_button, border_radius=15)
+    ohjeet_text = font.render("OHJEET", True, (0, 0, 0))
+    text_x = ohjeet_button.x + (ohjeet_button.width - ohjeet_text.get_width()) // 2
+    text_y = ohjeet_button.y + (ohjeet_button.height - ohjeet_text.get_height()) // 2
+    screen.blit(ohjeet_text, (text_x, text_y))
       
     pygame.display.flip()
       
