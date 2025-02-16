@@ -61,29 +61,33 @@ def start_screen():
       screen.blit(rendered_text, (x, y))
       y += line_spacing
       
-    # Värivalinnan otsikko ja nappulat
+    # Värivalinnan otsikko ja nappulat keskellä
     color_text = font.render("Choose your player color:", True, (253, 253, 253))
-    screen.blit(color_text, (10, 320))
-      
-    button_x = 10
-    button_y = 370
+    screen.blit(color_text, (WIDTH // 2 - color_text.get_width() // 2, 250))
+    
+    # Värivalintanapit keskelle
+    button_x = WIDTH // 2 - (len(colors) * 80) // 2
+    button_y = 300
     for color_name, color_value in colors.items():
       pygame.draw.rect(screen, color_value, (button_x, button_y, 60, 60))
       text = small_font.render(color_name, True, (255, 255, 255))
       screen.blit(text, (button_x, button_y + 65))
       button_x += 80
-      
+    
+    # Painikkeita vielä vähän alemmas
+    button_y += 150 
+    
     # START-nappula
-    start_button = pygame.Rect(WIDTH - 255, button_y, 100, 50)
-    pygame.draw.rect(screen, (0, 255, 0), start_button, border_radius=15)
+    start_button = pygame.Rect(WIDTH // 2 - 130, button_y, 120, 50)
+    pygame.draw.rect(screen, (211, 211, 211), start_button, border_radius=15)
     start_text = font.render("START", True, (0, 0, 0))
     text_x = start_button.x + (start_button.width - start_text.get_width()) // 2
     text_y = start_button.y + (start_button.height - start_text.get_height()) // 2
     screen.blit(start_text, (text_x, text_y))
     
     # OHJEET-nappula
-    ohjeet_button = pygame.Rect(WIDTH - 255, button_y + 60, 100, 50)
-    pygame.draw.rect(screen, (0, 255, 0), ohjeet_button, border_radius=15)
+    ohjeet_button = pygame.Rect(WIDTH // 2 + 10, button_y, 120, 50)
+    pygame.draw.rect(screen, (211, 211, 211), ohjeet_button, border_radius=15)
     ohjeet_text = font.render("OHJEET", True, (0, 0, 0))
     text_x = ohjeet_button.x + (ohjeet_button.width - ohjeet_text.get_width()) // 2
     text_y = ohjeet_button.y + (ohjeet_button.height - ohjeet_text.get_height()) // 2
