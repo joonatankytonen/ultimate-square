@@ -56,7 +56,7 @@ def start_screen():
     button_y += 150 
     
     # START-nappula
-    start_button = pygame.Rect(WIDTH // 2 - 130, button_y, 120, 50)
+    start_button = pygame.Rect(WIDTH // 2 + 10, button_y, 120, 50)
     pygame.draw.rect(screen, (211, 211, 211), start_button, border_radius=15)
     start_text = font.render("START", True, (0, 0, 0))
     text_x = start_button.x + (start_button.width - start_text.get_width()) // 2
@@ -64,7 +64,7 @@ def start_screen():
     screen.blit(start_text, (text_x, text_y))
     
     # OHJEET-nappula
-    ohjeet_button = pygame.Rect(WIDTH // 2 + 10, button_y, 120, 50)
+    ohjeet_button = pygame.Rect(WIDTH // 2 - 130, button_y, 120, 50)
     pygame.draw.rect(screen, (211, 211, 211), ohjeet_button, border_radius=15)
     ohjeet_text = font.render("GUIDE", True, (0, 0, 0))
     text_x = ohjeet_button.x + (ohjeet_button.width - ohjeet_text.get_width()) // 2
