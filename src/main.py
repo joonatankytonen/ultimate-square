@@ -87,58 +87,74 @@ def start_screen():
             print(f"Pelaajan väri valittu: {color_name}")
           button_x += 80
         if start_button.collidepoint(x, y):
-          game(player_color)
+          game()
         if ohjeet_button.collidepoint(x,y):
           guide_screen()
 
 # ohjeet sivu
 def guide_screen():
   running = True
+  # nuolinäppäimine kuva ja koko
+  arrowKeys = pygame.image.load("arrowkeys.png").convert_alpha()
+  arrowKeys = pygame.transform.scale(arrowKeys, (230,150))
+
   while running:
     screen.fill((50, 50, 50)) # Taustaväri
-  
-    # Ohjeet vasemmassa yläkulmassa
-    text = """Move with arrow keys: up, down, left and right.
+
+    # Nuolinäppäin teksti
+    arrowKeysText = "Move player with"
+    arrowKeysText_x = 60
+    arrowKeysText_y = 150
+    arrowKeysText = font.render(arrowKeysText, True, (255,255,255))
+    arrowKeysText = pygame.transform.rotate(arrowKeysText, 30)
+    screen.blit(arrowKeysText, (arrowKeysText_x, arrowKeysText_y))
     
+
+    # Ohjeet vasemmassa yläkulmassa
+    ohjeText = """
+  
     Avoid obstacles and walls.
     
-    Eat 10 foods to advance to the next level.
+    Eat 10 foods to advance to the
+    next level.
     
-    The final stage is an endless mode!!!!!!"""
-    lines = text.split("\n")
-    x_margin = 10
-    y_start = 10
-    line_spacing = 30
-    
+    There are 5 levels and the last one
+    is endless!
+    """
+    lines = ohjeText.split("\n")
+    x_margin = 400
+    y_start = 40
+    line_spacing = 50
     y = y_start
     for line in lines:
       rendered_text = font.render(line, True, (255, 255, 255))
       x = x_margin
       screen.blit(rendered_text, (x, y))
       y += line_spacing
-      
-   
-    
-    # OHJEET-nappula
-    back_button = pygame.Rect(WIDTH // 2 + 10, 150, 120, 50)
+
+    # BACK-nappula
+    back_button = pygame.Rect(50, 500, 120, 50)
     pygame.draw.rect(screen, (211, 211, 211), back_button, border_radius=15)
     back_text = font.render("BACK", True, (0, 0, 0))
     text_x = back_button.x + (back_button.width - back_text.get_width()) // 2
     text_y = back_button.y + (back_button.height - back_text.get_height()) // 2
     screen.blit(back_text, (text_x, text_y))
-      
+
+    screen.blit(arrowKeys, (80,230))
+    clock.tick(30)
     pygame.display.flip()
       
     for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+        pygame.quit()
+        exit()
       if event.type == pygame.MOUSEBUTTONDOWN:
         x, y = event.pos
-        button_x = 10
-        button_y = 370
       if back_button.collidepoint(x,y):
         start_screen()
 
 # Peli
-def game(playerColor):
+def game():
  
   # Ruoka muuttujat
   foodColor=(254, 141, 77)
@@ -165,7 +181,7 @@ def game(playerColor):
     pygame.draw.rect(screen, (0, 0, 0), (0, 0, WIDTH, HEIGHT), 10) # Piirretään reunat mustaksi
     
     # Piirrä pelaaja
-    player = pygame.draw.rect(screen, playerColor, (player_xPosition, player_yPosition, player_size, player_size))
+    player = pygame.draw.rect(screen, player_color, (player_xPosition, player_yPosition, player_size, player_size))
     
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
