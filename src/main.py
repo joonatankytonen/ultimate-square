@@ -79,8 +79,8 @@ def start_screen():
         exit()
       elif event.type == pygame.MOUSEBUTTONDOWN:
         x, y = event.pos
-        button_x = 10
-        button_y = 370
+        button_x = WIDTH // 2 - (len(colors) * 80) // 2
+        button_y = 300
         for color_name, color_value in colors.items():
           if button_x < x < button_x + 60 and button_y < y < button_y + 60:
             player_color = color_value
