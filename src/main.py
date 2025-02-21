@@ -173,6 +173,9 @@ def game():
   score = 0
   score_increment = 1
 
+  # pelin level
+  level = 1
+
   running = True
   game_over = False
   
@@ -215,8 +218,11 @@ def game():
       if player.colliderect(new_food):
         print("syöty")
         score += score_increment  # Lisää pistettä ruokaa syödessä
+        switch_level(score, level)
+        score, level = switch_level(score, level)
         ruokaOlemassa = 0
-    
+
+
       # Tarkistetaan, tuleeko törmäyksiä seinien kanssa, jos tulee, peli loppuu=True
       if player_xPosition <= 10 or player_xPosition + player_size >= WIDTH - 10 or player_yPosition <= 10 or player_yPosition + player_size >= HEIGHT - 10:
         game_over = True
@@ -228,7 +234,7 @@ def game():
 
       # Tekstin renderöinti
     text_left = font.render("Life", True, (0, 0, 0))
-    text_middle = font.render("Taso 1", True, (0, 0, 0))  # Väri (mustaa)
+    text_middle = font.render(f"Taso {level}", True, (0, 0, 0))  # Väri (mustaa)
     text_right = font.render(f"Score: {score}" , True, (0, 0, 0))
     
     
@@ -243,6 +249,14 @@ def game():
     
     pygame.display.flip()
     clock.tick(30)
+
+def switch_level(score, level):
+  if (score == 10):
+    print("Level vaihtuu")
+    level+=1
+    score=0
+  return score, level
+
 # kutsu aloitusnäyttöä
 start_screen()
  
@@ -251,5 +265,3 @@ print("Pelaajan valitsema väri:", player_color)
 
 # Sulje peli
 pygame.quit()
-
-ygame.quit()
