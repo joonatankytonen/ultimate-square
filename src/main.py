@@ -30,6 +30,40 @@ colors = {
 "Yellow": (255, 255, 0)
 }
 
+# Ensimmäinen aloitussivu (vain logo ja "Press ENTER")
+def first_screen():
+    running = True
+    text_visible = True  # Teksti vilkkuu
+    text_timer = 0
+
+    while running:
+        screen.fill((0, 0, 0))  # Musta tausta
+
+        # Näytetään pelin logo koko ruudulla, jos löytyy
+        if game_title:
+            screen.blit(pygame.transform.scale(game_title, (WIDTH, HEIGHT)), (0, 0))
+
+        # Vilkkuva teksti "Press ENTER"
+        if text_visible:
+            enter_text = font.render("Press ENTER", True, (255, 255, 255))
+            screen.blit(enter_text, (WIDTH // 2 - enter_text.get_width() // 2, HEIGHT - 100))
+
+        pygame.display.flip()
+        clock.tick(30)  # 30 FPS
+
+        # Tekstin vilkkuminen
+        text_timer += 1
+        if text_timer % 30 == 0:  # Joka 30 framea vaihtuu näkyvyys
+            text_visible = not text_visible
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:  # ENTER-painike
+                    running = False  # Siirrytään seuraavalle näytölle
+
 
  
 # pelin aloitussivu
@@ -274,6 +308,9 @@ def switch_level(score, level):
       score=0
       level_up = True
   return score, level, level_up
+
+# Kutsu ensimmäistä aloitusnäyttöä
+first_screen()
 
 # kutsu aloitusnäyttöä
 start_screen()
