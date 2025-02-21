@@ -251,10 +251,11 @@ def game():
     clock.tick(30)
 
 def switch_level(score, level):
-  if (score == 10):
-    print("Level vaihtuu")
-    level+=1
-    score=0
+  if (level < 5):
+    if (score == 10):
+      print("Level vaihtuu")
+      level+=1
+      score=0
   return score, level
 
 # kutsu aloitusnäyttöä
