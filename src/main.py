@@ -30,6 +30,9 @@ colors = {
 "Yellow": (255, 255, 0)
 }
 
+#elämä
+elama = 3 
+
 # Ensimmäinen aloitussivu (vain logo ja "Press ENTER")
 def first_screen():
     running = True
@@ -189,6 +192,7 @@ def guide_screen():
 
 # Peli
 def game():
+  global elama 
  
   # Ruoka muuttujat
   foodColor=(254, 141, 77)
@@ -267,7 +271,19 @@ def game():
 
       # Tarkistetaan, tuleeko törmäyksiä seinien kanssa, jos tulee, peli loppuu=True
       if player_xPosition <= 10 or player_xPosition + player_size >= WIDTH - 10 or player_yPosition <= 10 or player_yPosition + player_size >= HEIGHT - 10:
-        game_over = True
+        elama -= 1
+        print(f"Elämä jäljellä: {elama}")
+        #uudelleen sijoittaminen kuoleman jälkeen 
+        player_xPosition = WIDTH // 2 - player_size // 2
+        player_yPosition = HEIGHT // 2 - player_size // 2
+        if elama <= 0:
+            game_over_text = game_over_font.render("GAME OVER", True, (255, 0, 0)) # game over fontti
+            screen.blit(game_over_text, (WIDTH // 2 - game_over_text.get_width() // 2, HEIGHT // 2))
+            pygame.display.update()  # Update display immediately to show the text
+            pygame.time.wait(2000)
+            start_screen ()
+            return 
+        
       
       # Jos new_food True niin piirrä ruoka näytölle.
       if new_food:
@@ -275,7 +291,7 @@ def game():
 
 
       # Tekstin renderöinti
-    text_left = font.render("Life", True, (0, 0, 0))
+    text_left = font.render(f"Life: {elama}", True, (0, 0, 0))
     text_middle = font.render(f"Taso {level}", True, (0, 0, 0))  # Väri (mustaa)
     text_right = font.render(f"Score: {score}" , True, (0, 0, 0))
     
