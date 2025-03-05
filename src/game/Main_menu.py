@@ -5,7 +5,7 @@ from init_pygame import *
 font = pygame.font.Font(None, 20)
  
 # logoloinen tähän
-game_title = pygame.image.load("pelin_nimi.png")
+game_title = pygame.image.load("imgs/pelin_nimi.png")
  
 # pelaajan väri
 player_color = (255, 0, 0) # oletusväri punainen
@@ -86,7 +86,7 @@ def main_menu():
 def guide_screen():
   running = True
   # nuolinäppäimine kuva ja koko
-  arrowKeys = pygame.image.load("arrowkeys.png").convert_alpha()
+  arrowKeys = pygame.image.load("imgs/arrowkeys.png").convert_alpha()
   arrowKeys = pygame.transform.scale(arrowKeys, (230,150))
 
   while running:

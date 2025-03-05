@@ -1,5 +1,6 @@
 import random
-from .Player import Player
+from classes.Player import Player
+from classes.Food import Food
 
 # Peli
 def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock):
@@ -7,11 +8,9 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock):
   game_over_font = pygame.font.Font(None, 60)
  
   # Ruoka muuttujat
-  foodColor=(254, 141, 77)
-  foodSize=15
   ruokaOlemassa = 0
   new_food = None
-
+  
   # Luo pelaaja
   player = Player(color=(player_color))
   
@@ -30,7 +29,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock):
   
   while running:
     screen.fill((255, 255, 255)) # Täytetään näyttö valkoiseksi
-    reunat = pygame.draw.rect(screen, (0, 0, 0), (0, 0, WIDTH, HEIGHT), 10) # Piirretään reunat mustaksi
+    pygame.draw.rect(screen, (0, 0, 0), (0, 0, WIDTH, HEIGHT), 10) # Piirretään reunat mustaksi
     
     # Piirrä pelaaja
     player.draw(screen=screen)
@@ -47,28 +46,31 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock):
     if not game_over and not level_up:
       keys = pygame.key.get_pressed()
       player.move(keys=keys)
+
       # Jos ruokaa ei ole spawnaa yksi.
       if ruokaOlemassa == 0:
         x = random.randint(50, WIDTH-50)
         y = random.randint(50, HEIGHT-50)
-        new_food = pygame.Rect(x,y,foodSize,foodSize)
+        new_food = True
+        food = Food(x,y)
         ruokaOlemassa = 1
         
       # Jos pelaaja osuu ruokaan poistaa se aikaisemman ruoan ja spawnaa uuden.
-      if player.rect.colliderect(new_food):
+      if player.rect.colliderect(food):
         print("syöty")
         score += score_increment  # Lisää pistettä ruokaa syödessä
         score, level, level_up = switch_level(score, level)
         ruokaOlemassa = 0
+
         
 
       # Tarkistetaan, tuleeko törmäyksiä seinien kanssa, jos tulee, peli loppuu=True
-      # if player.rect.colliderect(reunat):
-      #   game_over = True
+      if player.rect.x <= 10 or player.rect.x + player.rect.width >= WIDTH - 10 or player.rect.y <= 10 or player.rect.y + player.rect.height >= HEIGHT - 10:
+        game_over = True
       
       # Jos new_food True niin piirrä ruoka näytölle.
       if new_food:
-        pygame.draw.rect(screen, foodColor, new_food)
+        food.draw(screen=screen)
 
 
       # Tekstin renderöinti
