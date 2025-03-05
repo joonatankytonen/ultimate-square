@@ -1,8 +1,8 @@
 import random
+from .Player import Player
 
 # Peli
 def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock):
-
 
   game_over_font = pygame.font.Font(None, 60)
  
@@ -11,14 +11,10 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock):
   foodSize=15
   ruokaOlemassa = 0
   new_food = None
-  
-  # Pelaajan asetukset
-  player_size = 40
-  player_xPosition, player_yPosition = WIDTH//2, HEIGHT//2 # Pelaajan alku position on pelin kentän keskellä
-  player_speed = 5
-  player_variable_x=0 # Tämä on pelaajan muuttuvat x ja y positiot jotka muuttavat oikeaa x ja y:tä
-  player_variable_y=0 # Tämä on pelaajan muuttuvat x ja y positiot jotka muuttavat oikeaa x ja y:tä
 
+  # Luo pelaaja
+  player = Player(color=(player_color))
+  
   #pelin score 
   score = 0
   score_increment = 1
@@ -34,10 +30,10 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock):
   
   while running:
     screen.fill((255, 255, 255)) # Täytetään näyttö valkoiseksi
-    pygame.draw.rect(screen, (0, 0, 0), (0, 0, WIDTH, HEIGHT), 10) # Piirretään reunat mustaksi
+    reunat = pygame.draw.rect(screen, (0, 0, 0), (0, 0, WIDTH, HEIGHT), 10) # Piirretään reunat mustaksi
     
     # Piirrä pelaaja
-    player = pygame.draw.rect(screen, player_color, (player_xPosition, player_yPosition, player_size, player_size))
+    player.draw(screen=screen)
     
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
@@ -49,23 +45,8 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock):
         print(f"Taso {level} alkaa!")
       
     if not game_over and not level_up:
-      player_xPosition += player_variable_x # Päivitetään pelaajan sijaintia koko ajan, jotta pelaaja on koko ajan liikkeessä
-      player_yPosition += player_variable_y
-    
       keys = pygame.key.get_pressed()
-      if keys[pygame.K_LEFT]:
-        player_variable_x = -player_speed # Aina nappia painaessa pelaaja vaihtaa suuntaa toiseen ja lopettaa vauhdin toisessa.
-        player_variable_y = 0
-      if keys[pygame.K_RIGHT]:
-        player_variable_x = player_speed
-        player_variable_y = 0
-      if keys[pygame.K_UP]:
-        player_variable_x = 0
-        player_variable_y = -player_speed
-      if keys[pygame.K_DOWN]:
-        player_variable_x = 0
-        player_variable_y = player_speed
-      
+      player.move(keys=keys)
       # Jos ruokaa ei ole spawnaa yksi.
       if ruokaOlemassa == 0:
         x = random.randint(50, WIDTH-50)
@@ -74,7 +55,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock):
         ruokaOlemassa = 1
         
       # Jos pelaaja osuu ruokaan poistaa se aikaisemman ruoan ja spawnaa uuden.
-      if player.colliderect(new_food):
+      if player.rect.colliderect(new_food):
         print("syöty")
         score += score_increment  # Lisää pistettä ruokaa syödessä
         score, level, level_up = switch_level(score, level)
@@ -82,8 +63,8 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock):
         
 
       # Tarkistetaan, tuleeko törmäyksiä seinien kanssa, jos tulee, peli loppuu=True
-      if player_xPosition <= 10 or player_xPosition + player_size >= WIDTH - 10 or player_yPosition <= 10 or player_yPosition + player_size >= HEIGHT - 10:
-        game_over = True
+      # if player.rect.colliderect(reunat):
+      #   game_over = True
       
       # Jos new_food True niin piirrä ruoka näytölle.
       if new_food:

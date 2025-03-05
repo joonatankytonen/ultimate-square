@@ -1,4 +1,4 @@
-import game.game as game
+import game.Game as Game
 from init_pygame import *
  
 # Fontin luominen
@@ -78,7 +78,7 @@ def main_menu():
             print(f"Pelaajan väri valittu: {color_name}")
           button_x += 80
         if start_button.collidepoint(x, y):
-          game.game(WIDTH=WIDTH, HEIGHT=HEIGHT, screen=screen, pygame=pygame, player_color=player_color, font=font, clock=clock)
+          Game.game(WIDTH=WIDTH, HEIGHT=HEIGHT, screen=screen, pygame=pygame, player_color=player_color, font=font, clock=clock)
         if ohjeet_button.collidepoint(x,y):
           guide_screen()
 

@@ -1,4 +1,4 @@
-import game.main_menu as main_menu
+import game.Main_menu as Main_menu
 
 # Kutsu logon splash_screen
-main_menu.logo_splash()
+Main_menu.logo_splash()
