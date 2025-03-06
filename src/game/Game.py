@@ -23,6 +23,9 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock):
   
   # Tasonvaihto lippu
   level_up = False
+  
+  #pelaajan aloitusnopeus
+  player_speed = 5
 
   running = True
   game_over = False
@@ -59,7 +62,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock):
       if player.rect.colliderect(food):
         print("syöty")
         score += score_increment  # Lisää pistettä ruokaa syödessä
-        score, level, level_up = switch_level(score, level)
+        score, level, level_up, player_speed = switch_level(score, level, player_speed)
         ruokaOlemassa = 0
 
         
@@ -99,11 +102,12 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock):
     pygame.display.flip()
     clock.tick(30)
 
-def switch_level(score, level):
+def switch_level(score, level, player_speed):
   level_up = False
   if level < 5 and score == 10:
       print("Level vaihtuu")
       level+=1
       score=0
       level_up = True
-  return score, level, level_up
+      player_speed += 1 # nopeus kasvaa
+  return score, level, level_up, player_speed
