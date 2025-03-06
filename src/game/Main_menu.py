@@ -78,7 +78,7 @@ def main_menu():
             print(f"Pelaajan väri valittu: {color_name}")
           button_x += 80
         if start_button.collidepoint(x, y):
-          Game.game(WIDTH=WIDTH, HEIGHT=HEIGHT, screen=screen, pygame=pygame, player_color=player_color, font=font, clock=clock)
+          Game.game(WIDTH=WIDTH, HEIGHT=HEIGHT, screen=screen, pygame=pygame, player_color=player_color, font=font, clock=clock, main_menu=main_menu)
         if ohjeet_button.collidepoint(x,y):
           guide_screen()
 

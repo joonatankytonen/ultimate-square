@@ -1,11 +1,16 @@
 import random
 from classes.Player import Player
 from classes.Food import Food
+from game.Main_menu import *
+from init_pygame import *
 
 # Peli
-def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock):
+def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
 
   game_over_font = pygame.font.Font(None, 60)
+  
+  #elämä
+  elama = 3
  
   # Ruoka muuttujat
   ruokaOlemassa = 0
@@ -39,7 +44,8 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock):
     
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
-        running = False
+        pygame.quit()
+        exit()
         
       # Jos taso on vaihtumassa, odota Enter-näppäintä
       if level_up and event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
@@ -65,11 +71,21 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock):
         score, level, level_up, player_speed = switch_level(score, level, player_speed)
         ruokaOlemassa = 0
 
-        
-
       # Tarkistetaan, tuleeko törmäyksiä seinien kanssa, jos tulee, peli loppuu=True
-      if player.rect.x <= 10 or player.rect.x + player.rect.width >= WIDTH - 10 or player.rect.y <= 10 or player.rect.y + player.rect.height >= HEIGHT - 10:
-        game_over = True
+      if player.rect.x <= 10 or player.rect.x + player.rect.width >= WIDTH - 10 or player.rect.y <= 10 or player.rect.y + player.rect.width +player.rect.height >= HEIGHT - 10:
+        elama -= 1
+        print(f"Elämä jäljellä: {elama}")
+        #uudelleen sijoittaminen kuoleman jälkeen 
+        player.rect.x = WIDTH // 2 - player.rect.width// 2
+        player.rect.y= HEIGHT // 2 -player.rect.height// 2
+        
+        if elama <= 0:
+            game_over_text = game_over_font.render("GAME OVER", True, (255, 0, 0)) # game over fontti
+            screen.blit(game_over_text, (WIDTH // 2 - game_over_text.get_width() // 2, HEIGHT // 2))
+            pygame.display.update()  # Update display immediately to show the text
+            pygame.time.wait(2000)
+            main_menu()
+            return
       
       # Jos new_food True niin piirrä ruoka näytölle.
       if new_food:
@@ -77,7 +93,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock):
 
 
       # Tekstin renderöinti
-    text_left = font.render("Life", True, (0, 0, 0))
+    text_left = font.render(f"Life: {elama}", True, (0, 0, 0))
     text_middle = font.render(f"Taso {level}", True, (0, 0, 0))  # Väri (mustaa)
     text_right = font.render(f"Score: {score}" , True, (0, 0, 0))
     
@@ -87,10 +103,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock):
     screen.blit(text_middle, (WIDTH // 2 - text_middle.get_width() // 2, 20))
     screen.blit(text_right, (WIDTH - text_right.get_width() - 20, 20))
     
-    # Jos peli on ohi
-    if game_over:
-      game_over_text = game_over_font.render("GAME OVER", True, (255, 0, 0)) # game over fontti
-      screen.blit(game_over_text, (WIDTH // 2 - game_over_text.get_width() // 2, HEIGHT // 2))
+    
     
     # Jos taso vaihtuu
     if level_up:
