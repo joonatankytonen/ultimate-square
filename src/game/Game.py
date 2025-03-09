@@ -68,7 +68,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
       if player.rect.colliderect(food):
         print("syöty")
         score += score_increment  # Lisää pistettä ruokaa syödessä
-        score, level, level_up, player_speed = switch_level(score, level, player_speed)
+        score, level, level_up, player_speed = switch_level(score, level, player, player_speed)
         ruokaOlemassa = 0
 
       # Tarkistetaan, tuleeko törmäyksiä seinien kanssa, jos tulee, peli loppuu=True
@@ -115,7 +115,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
     pygame.display.flip()
     clock.tick(30)
 
-def switch_level(score, level, player_speed):
+def switch_level(score, level, player, player_speed):
   level_up = False
   if level < 5 and score == 10:
       print("Level vaihtuu")
@@ -123,4 +123,9 @@ def switch_level(score, level, player_speed):
       score=0
       level_up = True
       player_speed += 1 # nopeus kasvaa
+      
+      # Tason vaihtuessa pelaaja aloittaa keskeltä
+      player.rect.x = WIDTH // 2 - player.rect.width // 2
+      player.rect.y = HEIGHT // 2 - player.rect.height // 2
+      
   return score, level, level_up, player_speed
