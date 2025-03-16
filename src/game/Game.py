@@ -34,10 +34,13 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
 
   running = True
   game_over = False
+
   
   while running:
     screen.fill((255, 255, 255)) # Täytetään näyttö valkoiseksi
     pygame.draw.rect(screen, (0, 0, 0), (0, 0, WIDTH, HEIGHT), 10) # Piirretään reunat mustaksi
+    
+    
     
     # Piirrä pelaaja
     player.draw(screen=screen)
