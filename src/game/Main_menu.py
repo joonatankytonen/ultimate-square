@@ -6,7 +6,7 @@ import game.Game as elama
 font = pygame.font.Font(None, 20)
  
 # logoloinen tähän
-game_title = pygame.image.load("imgs/pelin_nimi.png")
+game_title = pygame.image.load("imgs/ultimate square 2.jpg")
 
 # sydämmen kuvat
 heart_image = pygame.image.load('heart.png')
@@ -174,7 +174,7 @@ def logo_splash():
 
         # Näytetään pelin logo koko ruudulla, jos löytyy
         if game_title:
-            screen.blit(pygame.transform.scale(game_title, (WIDTH, HEIGHT)), (0, 0))
+            screen.blit(pygame.transform.scale(game_title, (800, 400)), (50, 100))
 
         # Vilkkuva teksti "Press ENTER"
         if text_visible:
