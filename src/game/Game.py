@@ -11,7 +11,12 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
   
   #elämä
   elama = 3
- 
+
+  # sydämmen kuvat
+  heart_image = pygame.image.load("imgs/heart.png")
+  heart_image = pygame.transform.scale(heart_image, (30, 30))  
+  heart_rect = heart_image.get_rect()
+
   # Ruoka muuttujat
   ruokaOlemassa = 0
   new_food = None
@@ -39,7 +44,6 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
   while running:
     screen.fill((255, 255, 255)) # Täytetään näyttö valkoiseksi
     pygame.draw.rect(screen, (0, 0, 0), (0, 0, WIDTH, HEIGHT), 10) # Piirretään reunat mustaksi
-    
     
     
     # Piirrä pelaaja
@@ -73,9 +77,8 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
         score += score_increment  # Lisää pistettä ruokaa syödessä
         score, level, level_up, player_speed = switch_level(score, level, player, player_speed)
         ruokaOlemassa = 0
-
       # Tarkistetaan, tuleeko törmäyksiä seinien kanssa, jos tulee, peli loppuu=True
-      if player.rect.x <= 10 or player.rect.x + player.rect.width >= WIDTH - 10 or player.rect.y <= 10 or player.rect.y + player.rect.width +player.rect.height >= HEIGHT - 10:
+      if player.rect.x <= 5 or player.rect.x + player.rect.width >= WIDTH - 5 or player.rect.y <= 5 or player.rect.y + player.rect.height >= HEIGHT - 5:
         elama -= 1
         print(f"Elämä jäljellä: {elama}")
         #uudelleen sijoittaminen kuoleman jälkeen 
@@ -95,18 +98,16 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
         food.draw(screen=screen)
 
 
-      # Tekstin renderöinti
-    text_left = font.render(f"Life: {elama}", True, (0, 0, 0))
+    # Piirrä Sydämmet
+    draw_health_bar(heart_image=heart_image, heart_rect=heart_rect, elama=elama)
+
+    # Tekstin renderöinti
     text_middle = font.render(f"Taso {level}", True, (0, 0, 0))  # Väri (mustaa)
     text_right = font.render(f"Score: {score}" , True, (0, 0, 0))
     
-    
     # Piirrä teksti ruudulle (esimerkiksi ylhäällä)
-    screen.blit(text_left, ( 20, 20)) # Teksti keskitettynä
     screen.blit(text_middle, (WIDTH // 2 - text_middle.get_width() // 2, 20))
     screen.blit(text_right, (WIDTH - text_right.get_width() - 20, 20))
-    
-    
     
     # Jos taso vaihtuu
     if level_up:
@@ -132,3 +133,17 @@ def switch_level(score, level, player, player_speed):
       player.rect.y = HEIGHT // 2 - player.rect.height // 2
       
   return score, level, level_up, player_speed
+
+def draw_health_bar(heart_image, heart_rect, elama):
+  font = pygame.font.Font(None, 36)
+  """Piirtää 'Life:' tekstin ja sen viereen sydämet elämien mukaan."""
+  text_left = font.render("Life:", True, (0, 0, 0))
+  screen.blit(text_left, (20, 20))  # Näytetään "Life:" teksti
+
+  # Lasketaan sydänten aloituspaikka suhteessa tekstiin
+  text_width = text_left.get_width()
+  hearts_x_start = 30 + text_width  # Siirretään sydämet tekstin oikealle puolelle
+
+  for i in range(elama):  # Piirretään niin monta sydäntä kuin on elämiä
+      screen.blit(heart_image, (hearts_x_start + i * (heart_rect.width + 5), 15))  # Sydämet tekstin jälkeen
+
