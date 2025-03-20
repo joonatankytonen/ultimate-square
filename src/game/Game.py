@@ -144,7 +144,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
     if level_up:
       if level == 5:
         large_font = pygame.font.Font(None, 100)
-        level_up_text = game_over_font.render("ENDLESS MODE", True, (192, 0, 0))
+        level_up_text = large_font.render("ENDLESS MODE", True, (192, 0, 0))
       else:
         level_up_text = game_over_font.render(f"Taso {level} alkaa!", True, (0, 128, 0))
         
