@@ -125,14 +125,13 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
             main_menu()
             return
 
-    # Piirrä Sydämmet
-    draw_health_bar(heart_image=heart_image, heart_rect=heart_rect, elama=elama)
-
-    # Tekstin renderöinti
+      # Tekstin renderöinti
+    #text_left = font.render(f"Life: {elama}", True, (0, 0, 0))
     text_middle = font.render(f"Taso {level}", True, (0, 0, 0))  # Väri (mustaa)
     text_right = font.render(f"Score: {score}" , True, (0, 0, 0))
     
     # Piirrä teksti ruudulle (esimerkiksi ylhäällä)
+    #screen.blit(text_left, ( 20, 20)) # Teksti keskitettynä
     screen.blit(text_middle, (WIDTH // 2 - text_middle.get_width() // 2, 20))
     screen.blit(text_right, (WIDTH - text_right.get_width() - 20, 20))
     
