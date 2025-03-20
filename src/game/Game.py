@@ -32,6 +32,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
   #pelaajan aloitusnopeus
   player_speed = 5
 
+
   running = True
   game_over = False
 
@@ -96,13 +97,13 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
 
 
       # Tekstin renderöinti
-    text_left = font.render(f"Life: {elama}", True, (0, 0, 0))
+    #text_left = font.render(f"Life: {elama}", True, (0, 0, 0))
     text_middle = font.render(f"Taso {level}", True, (0, 0, 0))  # Väri (mustaa)
     text_right = font.render(f"Score: {score}" , True, (0, 0, 0))
     
     
     # Piirrä teksti ruudulle (esimerkiksi ylhäällä)
-    screen.blit(text_left, ( 20, 20)) # Teksti keskitettynä
+    #screen.blit(text_left, ( 20, 20)) # Teksti keskitettynä
     screen.blit(text_middle, (WIDTH // 2 - text_middle.get_width() // 2, 20))
     screen.blit(text_right, (WIDTH - text_right.get_width() - 20, 20))
     

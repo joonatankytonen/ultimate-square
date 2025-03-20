@@ -28,20 +28,6 @@ colors = {
 "Yellow": (255, 255, 0)
 }
 
-def draw_health_bar():
-    """Piirtää 'Life:' tekstin ja sen viereen sydämet elämien mukaan."""
-    text_left = font.render("Life:", True, (0, 0, 0))
-    screen.blit(text_left, (20, 20))  # Näytetään "Life:" teksti
-
-    # Lasketaan sydänten aloituspaikka suhteessa tekstiin
-    text_width = text_left.get_width()
-    hearts_x_start = 30 + text_width  # Siirretään sydämet tekstin oikealle puolelle
-
-    for i in range(elama):  # Piirretään niin monta sydäntä kuin on elämiä
-        screen.blit(heart_image, (hearts_x_start + i * (heart_rect.width + 5), 15))  # Sydämet tekstin jälkeen
-
-
-
 
 # pelin aloitussivu
 def main_menu():
