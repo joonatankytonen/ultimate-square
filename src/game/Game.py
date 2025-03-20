@@ -126,11 +126,15 @@ def switch_level(score, level, player, player_speed):
       level+=1
       score=0
       level_up = True
-      player_speed += 1 # nopeus kasvaa
+      player_speed += 2 # nopeus kasvaa
+      
+      player.speed = player_speed
       
       # Tason vaihtuessa pelaaja aloittaa keskeltä
       player.rect.x = WIDTH // 2 - player.rect.width // 2
       player.rect.y = HEIGHT // 2 - player.rect.height // 2
+      
+      print(f"Taso {level} ja pelaajan nopeus {player.speed}")
       
   return score, level, level_up, player_speed
 
