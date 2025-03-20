@@ -146,25 +146,27 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
     pygame.display.flip()
     clock.tick(30)
 
-def switch_level(score, level, player, player_speed):
+def switch_level(score, level, player, player_speed, WIDTH, HEIGHT):
   level_up = False
   obstacles = []
   if level < 5 and score == 10:
-      print("Level vaihtuu")
-      level+=1
-      score=0
-      level_up = True
-      player_speed += 2 # nopeus kasvaa
-      
-      player.speed = player_speed
-      
-      # Tason vaihtuessa pelaaja aloittaa keskeltä
-      player.rect.x = WIDTH // 2 - player.rect.width // 2
-      player.rect.y = HEIGHT // 2 - player.rect.height // 2
-      
-      print(f"Taso {level} ja pelaajan nopeus {player.speed}")
-      # Generoidaan uudet esteet
-      obstacles = generate_obstacles(level, WIDTH, HEIGHT, player)
+    print("Level vaihtuu")
+    level+=1
+    score=0
+    level_up = True
+    player_speed += 2 # nopeus kasvaa
+    print("moi")
+    
+    player.speed = player_speed
+    
+    # Tason vaihtuessa pelaaja aloittaa keskeltä
+    player.rect.x = WIDTH // 2 - player.rect.width // 2
+    player.rect.y = HEIGHT // 2 - player.rect.height // 2
+    
+    print(f"Taso {level} ja pelaajan nopeus {player.speed}")
+    # Generoidaan uudet esteet
+    obstacles = generate_obstacles(level, WIDTH, HEIGHT, player)
+    print("moi taas")
       
   return score, level, level_up, player_speed, obstacles
 
@@ -185,26 +187,6 @@ def generate_obstacles(level, WIDTH, HEIGHT, player):
                     obstacles.append(obstacle)
                     break
     return obstacles
-
-# Tason vaihto - päivitetty esteiden luonti mukaan
-def switch_level(score, level, player, player_speed, WIDTH, HEIGHT):
-    level_up = False
-    obstacles = []
-    if level < 5 and score == 10:
-        print("Level vaihtuu")
-        level += 1
-        score = 0
-        level_up = True
-        player_speed += 1  # Nopeus kasvaa
-        
-        # Pelaaja aloittaa keskeltä
-        player.rect.x = WIDTH // 2 - player.rect.width // 2
-        player.rect.y = HEIGHT // 2 - player.rect.height // 2
-        
-        # Generoidaan uudet esteet
-        obstacles = generate_obstacles(level, WIDTH, HEIGHT, player)
-
-    return score, level, level_up, player_speed, obstacles
   
 def draw_health_bar(heart_image, heart_rect, elama):
   font = pygame.font.Font(None, 36)
