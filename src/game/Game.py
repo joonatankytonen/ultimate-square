@@ -127,6 +127,10 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
 
       # Tekstin renderöinti
     #text_left = font.render(f"Life: {elama}", True, (0, 0, 0))
+    # Piirrä Sydämmet
+    draw_health_bar(heart_image=heart_image, heart_rect=heart_rect, elama=elama)
+
+    # Tekstin renderöinti
     text_middle = font.render(f"Taso {level}", True, (0, 0, 0))  # Väri (mustaa)
     text_right = font.render(f"Score: {score}" , True, (0, 0, 0))
     
