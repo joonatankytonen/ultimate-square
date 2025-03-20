@@ -1,8 +1,8 @@
 from init_pygame import *
 
 class Player:
-  def __init__(self, x=WIDTH/2, y=HEIGHT/2, var_x=0, var_y=0, width=40, heigt=40, color=(255, 0, 0), speed=5):
-    self.rect = pygame.Rect(x,y,width, heigt)
+  def __init__(self, x=WIDTH/2, y=HEIGHT/2, var_x=0, var_y=0, width=40, height=40, color=(255, 0, 0), speed=5):
+    self.rect = pygame.Rect(x,y,width, height)
     self.color = color
     self.speed = speed
     self.var_x = var_x
