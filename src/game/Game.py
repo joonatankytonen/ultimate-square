@@ -140,8 +140,14 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
     screen.blit(text_right, (WIDTH - text_right.get_width() - 20, 20))
     
     # Jos taso vaihtuu
+    # Jos päästään tasolle 5 -> Endless Mode teksti
     if level_up:
-      level_up_text = game_over_font.render(f"Taso {level} alkaa!", True, (0, 128, 0))
+      if level == 5:
+        large_font = pygame.font.Font(None, 100)
+        level_up_text = game_over_font.render("ENDLESS MODE", True, (192, 0, 0))
+      else:
+        level_up_text = game_over_font.render(f"Taso {level} alkaa!", True, (0, 128, 0))
+        
       instruction_text = font.render("Paina ENTER jatkaaksesi", True, (0, 0, 0))
       screen.blit(level_up_text, (WIDTH // 2 - level_up_text.get_width() // 2, HEIGHT // 2 - 50))
       screen.blit(instruction_text, (WIDTH // 2 - instruction_text.get_width() // 2, HEIGHT // 2 + 20))
