@@ -43,7 +43,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
   game_over = False
 
   while running:
-    screen.fill((255, 255, 255))  # Täytetään näyttö valkoiseksi
+    screen.fill((220, 220, 220))  # Täytetään näyttö valeanharmaaksi
     pygame.draw.rect(screen, (0, 0, 0), (0, 0, WIDTH, HEIGHT), 10)  # Piirretään reunat mustaksi
 
     # Piirrä esteet
