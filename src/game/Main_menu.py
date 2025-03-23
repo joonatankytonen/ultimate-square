@@ -176,3 +176,14 @@ def logo_splash():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:  # ENTER-painike
                     main_menu()
+                    
+def save_high_score(score):
+  """Tallenna pelaajan tulos tiedostoon high_score.txt"""
+  global high_score
+  if score > high_score:
+    high_score = score
+    with open("high_score.txt", "w") as file:
+      file.write(str(score))
+      print(f"Uusi high score: {score}")
+  else:
+    print(f"Pelaajan tulos: {score}")
