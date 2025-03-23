@@ -1,4 +1,5 @@
-import random 
+import random  
+import json
 from classes.Player import Player
 from classes.Food import Food
 from game.Main_menu import *
@@ -26,7 +27,15 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
   # Pelin score 
   score = 0
   score_increment = 1
-
+  
+  #highscore kansio
+  high_score_file = "highscore.json" 
+  try:
+    with open(high_score_file, "r") as file:
+      high_score = json.load(file)
+  except (FileNotFoundError, json.JSONDecodeError):
+    high_score = 0
+       
   # Pelin level
   level = 1
   
@@ -41,6 +50,8 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
 
   running = True
   game_over = False
+  new_high_score = False
+  new_high_score_timer = 0
 
   while running:
     screen.fill((220, 220, 220))  # Täytetään näyttö valeanharmaaksi
@@ -76,6 +87,13 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
               player.rect.x = WIDTH // 2 - player.rect.width // 2
               player.rect.y = HEIGHT // 2 - player.rect.height // 2
               if elama <= 0:
+                  game_over = True
+                  if score > high_score:    
+                    high_score = score
+                    with open(high_score_file, "w") as file:
+                      json.dump(high_score, file)
+                    new_high_score = True
+                    new_high_score_timer = pygame.time.get_ticks()
                   game_over_text = game_over_font.render("GAME OVER", True, (255, 0, 0))
                   screen.blit(game_over_text, (WIDTH // 2 - game_over_text.get_width() // 2, HEIGHT // 2))
                   pygame.display.update()
@@ -118,6 +136,13 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
         player.rect.y = HEIGHT // 2 - player.rect.height// 2
         
         if elama <= 0:
+            game_over = True
+            if score > high_score:
+                high_score = score
+                with open(high_score_file, "w") as file:
+                    json.dump(high_score, file)
+                new_high_score = True
+                new_high_score_timer = pygame.time.get_ticks()
             game_over_text = game_over_font.render("GAME OVER", True, (255, 0, 0))
             screen.blit(game_over_text, (WIDTH // 2 - game_over_text.get_width() // 2, HEIGHT // 2))
             pygame.display.update()  # Update display immediately to show the text
@@ -138,7 +163,13 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
     #screen.blit(text_left, ( 20, 20)) # Teksti keskitettynä
     screen.blit(text_middle, (WIDTH // 2 - text_middle.get_width() // 2, 20))
     screen.blit(text_right, (WIDTH - text_right.get_width() - 20, 20))
+    high_score_text = font.render(f"High Score: {high_score}", True, (0, 0, 0))
+    screen.blit(high_score_text, (WIDTH - high_score_text.get_width() - 20, 50))
     
+    if new_high_score and pygame.time.get_ticks() - new_high_score_timer < 1000: 
+      new_high_score_text = font.render("Uusi High Score!", True, (255, 0, 0))
+      screen.blit(new_high_score_text, (WIDTH // 2 - new_high_score_text.get_width() // 2, 50))
+      
     # Jos taso vaihtuu
     # Jos päästään tasolle 5 -> Endless Mode teksti
     if level_up:
@@ -161,7 +192,6 @@ def switch_level(score, level, player, player_speed, WIDTH, HEIGHT):
   if level < 5 and score == 10:
     print("Level vaihtuu")
     level+=1
-    score=0
     level_up = True
     player_speed += 2 # nopeus kasvaa
     print("moi")
