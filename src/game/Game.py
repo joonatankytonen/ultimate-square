@@ -76,7 +76,6 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
       # Jos taso on vaihtumassa, odota Enter-näppäintä
       if level_up and event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
         level_up = False
-        obstacles = generate_obstacles(level, WIDTH, HEIGHT, player)  # Uudet esteet levelin alussa
         print(f"Taso {level} alkaa!")
       
     if not game_over and not level_up:
