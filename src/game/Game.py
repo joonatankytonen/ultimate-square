@@ -1,12 +1,17 @@
 import random  
 import json
+import os
 from classes.Player import Player
 from classes.Food import Food
 from game.Main_menu import *
 from init_pygame import *
 
+# Tiedostopolku highscore.json:iin
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+high_score_file = os.path.join(BASE_DIR, "highscore.json")
+
 # Peli
-def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
+def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, player_name):  # <-- Lisätty player_name!
 
   game_over_font = pygame.font.Font(None, 60)
   
@@ -28,13 +33,12 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
   score = 0
   score_increment = 1
   
-  #highscore kansio
-  high_score_file = "highscore.json" 
+  # Lataa highscoret tiedostosta
   try:
     with open(high_score_file, "r") as file:
-      high_score = json.load(file)
+      high_scores = json.load(file)
   except (FileNotFoundError, json.JSONDecodeError):
-    high_score = 0
+    high_scores = []
        
   # Pelin level
   level = 1
@@ -88,12 +92,9 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
               player.rect.y = HEIGHT // 2 - player.rect.height // 2
               if elama <= 0:
                   game_over = True
-                  if score > high_score:    
-                    high_score = score
-                    with open(high_score_file, "w") as file:
-                      json.dump(high_score, file)
-                    new_high_score = True
-                    new_high_score_timer = pygame.time.get_ticks()
+                  save_high_score(player_name, score)  # <-- Tallennus
+                  new_high_score = True
+                  new_high_score_timer = pygame.time.get_ticks()
                   game_over_text = game_over_font.render("GAME OVER", True, (255, 0, 0))
                   screen.blit(game_over_text, (WIDTH // 2 - game_over_text.get_width() // 2, HEIGHT // 2))
                   pygame.display.update()
@@ -137,12 +138,9 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
         
         if elama <= 0:
             game_over = True
-            if score > high_score:
-                high_score = score
-                with open(high_score_file, "w") as file:
-                    json.dump(high_score, file)
-                new_high_score = True
-                new_high_score_timer = pygame.time.get_ticks()
+            save_high_score(player_name, score)  # <-- Tallennus
+            new_high_score = True
+            new_high_score_timer = pygame.time.get_ticks()
             game_over_text = game_over_font.render("GAME OVER", True, (255, 0, 0))
             screen.blit(game_over_text, (WIDTH // 2 - game_over_text.get_width() // 2, HEIGHT // 2))
             pygame.display.update()  # Update display immediately to show the text
@@ -151,8 +149,6 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
             return
 
       # Tekstin renderöinti
-    #text_left = font.render(f"Life: {elama}", True, (0, 0, 0))
-    # Piirrä Sydämmet
     draw_health_bar(heart_image=heart_image, heart_rect=heart_rect, elama=elama)
 
     # Tekstin renderöinti
@@ -160,10 +156,12 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
     text_right = font.render(f"Score: {score}" , True, (0, 0, 0))
     
     # Piirrä teksti ruudulle (esimerkiksi ylhäällä)
-    #screen.blit(text_left, ( 20, 20)) # Teksti keskitettynä
     screen.blit(text_middle, (WIDTH // 2 - text_middle.get_width() // 2, 20))
     screen.blit(text_right, (WIDTH - text_right.get_width() - 20, 20))
-    high_score_text = font.render(f"High Score: {high_score}", True, (0, 0, 0))
+    
+    # High Score näkyville (suurin pisteistä top 5 listalta)
+    highest_score = max([entry['score'] for entry in high_scores], default=0)
+    high_score_text = font.render(f"High Score: {highest_score}", True, (0, 0, 0))
     screen.blit(high_score_text, (WIDTH - high_score_text.get_width() - 20, 50))
     
     if new_high_score and pygame.time.get_ticks() - new_high_score_timer < 1000: 
@@ -185,16 +183,31 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu):
 
     pygame.display.flip()
     clock.tick(30)
+    
+def save_high_score(player_name, score):
+  try:
+    with open(high_score_file, "r") as file:
+      high_scores = json.load(file)
+  except (FileNotFoundError, json.JSONDecodeError):
+    high_scores = []
+    
+  high_scores.append({"name": player_name, "score": score})
+  high_scores = sorted(high_scores, key=lambda x: x["score"], reverse=True)[:5]
+  
+  with open(high_score_file, "w") as file:
+    json.dump(high_scores, file, indent=2)
+    
+  print("päivitetyt highscoret:", high_scores)
 
 def switch_level(score, level, player, player_speed, WIDTH, HEIGHT):
   level_up = False
   obstacles = []
-  if level < 5 and score == 10:
+  if level < 5 and score != 0 and score % 10 == 0:
     print("Level vaihtuu")
     level+=1
     level_up = True
-    player_speed += 2 # nopeus kasvaa
-    print("moi")
+    player_speed += 1.5 # nopeus kasvaa
+    print(f"Taso: {level}, Pelaajan nopeus: {player_speed}")
     
     player.speed = player_speed
     
@@ -208,7 +221,6 @@ def switch_level(score, level, player, player_speed, WIDTH, HEIGHT):
     print("moi taas")
       
   return score, level, level_up, player_speed, obstacles
-
 
 # Funktio esteiden generointiin
 def generate_obstacles(level, WIDTH, HEIGHT, player):
