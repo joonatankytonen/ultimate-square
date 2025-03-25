@@ -1,5 +1,9 @@
 [
   {
+    "name": "ARE",
+    "score": 70
+  },
+  {
     "name": "Ekito",
     "score": 68
   },
@@ -14,9 +18,5 @@
   {
     "name": "Iida",
     "score": 47
-  },
-  {
-    "name": "Pekka",
-    "score": 46
   }
 ]
