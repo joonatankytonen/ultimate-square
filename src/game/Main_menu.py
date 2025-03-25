@@ -126,10 +126,10 @@ def main_menu():
 
       # Nuolinäppäimet ja ENTER - näppäimet
       elif event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_LEFT:
+        if event.key == pygame.K_LEFT or event.key == pygame.K_a:
           selected_color_index = (selected_color_index - 1) % len(colors)
           print(f"Valittu väri: {color_keys[selected_color_index]}")
-        elif event.key == pygame.K_RIGHT:
+        elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
           selected_color_index = (selected_color_index + 1) % len(colors)
           print(f"Valittu väri: {color_keys[selected_color_index]}")
         elif event.key == pygame.K_RETURN:
