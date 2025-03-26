@@ -13,8 +13,9 @@ high_score_file = os.path.join(BASE_DIR, "highscore.json")
 # Peli
 def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, player_name):  # <-- Lisätty player_name!
   
+  print(f"pelaajan nimi on {player_name}")
   mainFont = pygame.font.Font(None, 60)
-  
+
   # elämä
   elama = 3
 
@@ -92,7 +93,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
               player.rect.x = WIDTH // 2 - player.rect.width // 2
               player.rect.y = HEIGHT // 2 - player.rect.height // 2
               if elama <= 0:
-                elematLoppu(player_name=player_name, score=score, main_menu=main_menu)
+                elematLoppu(player_name=player_name, score=score, main_menu=main_menu, player_color=player_color)
       # Jos ruokaa ei ole, spawnaa yksi
       if food is None:
           while True:
@@ -128,7 +129,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
         player.rect.y = HEIGHT // 2 - player.rect.height// 2
         
         if elama <= 0:
-          elematLoppu(player_name=player_name, score=score, main_menu=main_menu)
+          elematLoppu(player_name=player_name, score=score, main_menu=main_menu, player_color=player_color)
 
 
     draw_health_bar(heart_image=heart_image, heart_rect=heart_rect, elama=elama)
@@ -166,22 +167,42 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
     pygame.display.flip()
     clock.tick(30)
 
-def elematLoppu(player_name, score, main_menu):
+def elematLoppu(player_name, score, main_menu, player_color):
   game_over = True
   save_high_score(player_name, score)  # <-- Tallennus
   new_high_score = True
   new_high_score_timer = pygame.time.get_ticks()
   pygame.display.update()  # Update display immediately to show the text
   pygame.time.wait(500)
-  popUpWindow()
+  popUpWindow(main_menu=main_menu, player_name=player_name, player_color=player_color)
 
-def popUpWindow():
+def popUpWindow(main_menu, player_name, player_color):
   game_over_font = pygame.font.Font(None, 60)
   font = pygame.font.Font(None, 36)
+
+  # PopUp window koko
   popUpWIDTH=350
   popUpHEIGTH=350
+
+  # Nappi muuttujia
+  buttonWidth = 120
+  buttonHeigth = 50
+  buttonColor = pygame.Color(232, 221, 194)
+  buttonBorderColor = pygame.Color(117, 117, 117)
+  buttonBorderRadius = 15
+
+  # Taustan himmennys juttuja
+  dimScreenColor = pygame.Color(30,30,30,5)
+  dimSurf = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+  dimSurf.fill(dimScreenColor)
+  
   while True:
     pygame.display.update()
+
+    # Himmennä tausta
+    screen.blit(dimSurf,(0,0))
+
+    #Pop-Up window and game over text
     popup_rect = pygame.Rect(WIDTH//2-popUpWIDTH//2, HEIGHT//2-popUpHEIGTH//2, popUpWIDTH, popUpHEIGTH)
     pygame.draw.rect(screen, (200, 200, 200), popup_rect, border_radius=10)
     pygame.draw.rect(screen, (0, 0, 0), popup_rect, 2, border_radius=10)  # Border
@@ -189,28 +210,49 @@ def popUpWindow():
     screen.blit(game_over_text, (popUpWIDTH-26, popUpHEIGTH //2))
 
     # again-nappula
-    again_button = pygame.Rect(popUpWIDTH, popUpHEIGTH, 120, 50)
-    pygame.draw.rect(screen, (211, 211, 211), again_button, border_radius=15)
-    start_text = font.render("PLAY AGAIN", True, (0, 0, 0))
+    again_button = pygame.Rect(WIDTH//2-popUpWIDTH//2+115, HEIGHT//2-popUpHEIGTH//2+130,buttonWidth, buttonHeigth)
+    pygame.draw.rect(screen, buttonColor, again_button, border_radius=buttonBorderRadius)
+    pygame.draw.rect(screen, buttonBorderColor, again_button, 2, border_radius=buttonBorderRadius)
+    start_text = font.render("AGAIN", True, (0, 0, 0))
     text_x = again_button.x + (again_button.width - start_text.get_width()) // 2
     text_y = again_button.y + (again_button.height - start_text.get_height()) // 2
     screen.blit(start_text, (text_x, text_y))
 
     # menu-nappula
-    again_button = pygame.Rect(popUpWIDTH, popUpHEIGTH-75, 120, 50)
-    pygame.draw.rect(screen, (211, 211, 211), again_button, border_radius=15)
+    menu_button = pygame.Rect(WIDTH//2-popUpWIDTH//2+115, HEIGHT//2-popUpHEIGTH//2+190, buttonWidth, buttonHeigth)
+    pygame.draw.rect(screen, buttonColor, menu_button, border_radius=buttonBorderRadius)
+    pygame.draw.rect(screen, buttonBorderColor, menu_button, 2, border_radius=buttonBorderRadius)
     start_text = font.render("MENU", True, (0, 0, 0))
-    text_x = again_button.x + (again_button.width - start_text.get_width()) // 2
-    text_y = again_button.y + (again_button.height - start_text.get_height()) // 2
+    text_x = menu_button.x + (menu_button.width - start_text.get_width()) // 2
+    text_y = menu_button.y + (menu_button.height - start_text.get_height()) // 2
     screen.blit(start_text, (text_x, text_y))
 
     # lopeta-nappula
-    again_button = pygame.Rect(popUpWIDTH, popUpHEIGTH-145, 120, 50)
-    pygame.draw.rect(screen, (211, 211, 211), again_button, border_radius=15)
+    quit_button = pygame.Rect(WIDTH//2-popUpWIDTH//2+115, HEIGHT//2-popUpHEIGTH//2+250, buttonWidth, buttonHeigth)
+    pygame.draw.rect(screen, buttonColor, quit_button, border_radius=buttonBorderRadius)
+    pygame.draw.rect(screen, buttonBorderColor, quit_button, 2, border_radius=buttonBorderRadius)
     start_text = font.render("QUIT", True, (0, 0, 0))
-    text_x = again_button.x + (again_button.width - start_text.get_width()) // 2
-    text_y = again_button.y + (again_button.height - start_text.get_height()) // 2
+    text_x = quit_button.x + (quit_button.width - start_text.get_width()) // 2
+    text_y = quit_button.y + (quit_button.height - start_text.get_height()) // 2
     screen.blit(start_text, (text_x, text_y))
+    
+
+    for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+        pygame.quit()
+        exit()
+      elif event.type == pygame.MOUSEBUTTONDOWN:
+        x,y = event.pos
+        if again_button.collidepoint(x,y):
+          print("uudestaan")
+          game(WIDTH=WIDTH, HEIGHT=HEIGHT, screen=screen, pygame=pygame, player_color=player_color, font=font, clock=clock, main_menu=main_menu, player_name=player_name)
+        if menu_button.collidepoint(x,y):
+          print("menu")
+          main_menu()
+        if quit_button.collidepoint(x,y):
+          print("quit")   
+          pygame.quit()
+          exit()
 
 def save_high_score(player_name, score):
   try:
