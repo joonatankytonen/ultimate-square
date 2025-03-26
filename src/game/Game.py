@@ -12,9 +12,10 @@ high_score_file = os.path.join(BASE_DIR, "highscore.json")
 
 # Peli
 def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, player_name):  # <-- Lisätty player_name!
-
-  game_over_font = pygame.font.Font(None, 60)
   
+  print(f"pelaajan nimi on {player_name}")
+  mainFont = pygame.font.Font(None, 60)
+
   # elämä
   elama = 3
 
@@ -28,6 +29,8 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
   
   # Luo pelaaja
   player = Player(color=(player_color))
+  player.rect.x = WIDTH // 2 - player.rect.width // 2
+  player.rect.y = HEIGHT // 2 - player.rect.height // 2
   
   # Pelin score 
   score = 0
@@ -90,17 +93,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
               player.rect.x = WIDTH // 2 - player.rect.width // 2
               player.rect.y = HEIGHT // 2 - player.rect.height // 2
               if elama <= 0:
-                  game_over = True
-                  save_high_score(player_name, score)  # <-- Tallennus
-                  new_high_score = True
-                  new_high_score_timer = pygame.time.get_ticks()
-                  game_over_text = game_over_font.render("GAME OVER", True, (255, 0, 0))
-                  screen.blit(game_over_text, (WIDTH // 2 - game_over_text.get_width() // 2, HEIGHT // 2))
-                  pygame.display.update()
-                  pygame.time.wait(2000)
-                  main_menu()
-                  return
-
+                elematLoppu(player_name=player_name, score=score, main_menu=main_menu, player_color=player_color)
       # Jos ruokaa ei ole, spawnaa yksi
       if food is None:
           while True:
@@ -128,7 +121,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
             obstacles = new_obstacles
 
       # Tarkistetaan, tuleeko törmäyksiä seinien kanssa
-      if player.rect.x <= 10 or player.rect.x + player.rect.width >= WIDTH - 10 or player.rect.y <= 10 or player.rect.y + player.rect.height >= HEIGHT - 10:
+      if player.rect.x <= 5 or player.rect.x + player.rect.width >= WIDTH - 5 or player.rect.y <= 5 or player.rect.y + player.rect.height >= HEIGHT - 5:
         elama -= 1
         print(f"Elämä jäljellä: {elama}")
         # Uudelleensijoittaminen kuoleman jälkeen 
@@ -136,18 +129,9 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
         player.rect.y = HEIGHT // 2 - player.rect.height// 2
         
         if elama <= 0:
-            game_over = True
-            save_high_score(player_name, score)  # <-- Tallennus
-            new_high_score = True
-            new_high_score_timer = pygame.time.get_ticks()
-            game_over_text = game_over_font.render("GAME OVER", True, (255, 0, 0))
-            screen.blit(game_over_text, (WIDTH // 2 - game_over_text.get_width() // 2, HEIGHT // 2))
-            pygame.display.update()  # Update display immediately to show the text
-            pygame.time.wait(2000)
-            main_menu()
-            return
+          elematLoppu(player_name=player_name, score=score, main_menu=main_menu, player_color=player_color)
 
-      # Tekstin renderöinti
+
     draw_health_bar(heart_image=heart_image, heart_rect=heart_rect, elama=elama)
 
     # Tekstin renderöinti
@@ -174,7 +158,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
         large_font = pygame.font.Font(None, 100)
         level_up_text = large_font.render("ENDLESS MODE", True, (192, 0, 0))
       else:
-        level_up_text = game_over_font.render(f"Taso {level} alkaa!", True, (0, 128, 0))
+        level_up_text = mainFont.render(f"Taso {level} alkaa!", True, (0, 128, 0))
         
       instruction_text = font.render("Paina ENTER jatkaaksesi", True, (0, 0, 0))
       screen.blit(level_up_text, (WIDTH // 2 - level_up_text.get_width() // 2, HEIGHT // 2 - 50))
@@ -182,7 +166,94 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
 
     pygame.display.flip()
     clock.tick(30)
+
+def elematLoppu(player_name, score, main_menu, player_color):
+  game_over = True
+  save_high_score(player_name, score)  # <-- Tallennus
+  new_high_score = True
+  new_high_score_timer = pygame.time.get_ticks()
+  pygame.display.update()  # Update display immediately to show the text
+  pygame.time.wait(500)
+  popUpWindow(main_menu=main_menu, player_name=player_name, player_color=player_color)
+
+def popUpWindow(main_menu, player_name, player_color):
+  game_over_font = pygame.font.Font(None, 60)
+  font = pygame.font.Font(None, 36)
+
+  # PopUp window koko
+  popUpWIDTH=350
+  popUpHEIGTH=350
+
+  # Nappi muuttujia
+  buttonWidth = 120
+  buttonHeigth = 50
+  buttonColor = pygame.Color(232, 221, 194)
+  buttonBorderColor = pygame.Color(117, 117, 117)
+  buttonBorderRadius = 15
+
+  # Taustan himmennys juttuja
+  dimScreenColor = pygame.Color(30,30,30,5)
+  dimSurf = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+  dimSurf.fill(dimScreenColor)
+  
+  while True:
+    pygame.display.update()
+
+    # Himmennä tausta
+    screen.blit(dimSurf,(0,0))
+
+    #Pop-Up window and game over text
+    popup_rect = pygame.Rect(WIDTH//2-popUpWIDTH//2, HEIGHT//2-popUpHEIGTH//2, popUpWIDTH, popUpHEIGTH)
+    pygame.draw.rect(screen, (200, 200, 200), popup_rect, border_radius=10)
+    pygame.draw.rect(screen, (0, 0, 0), popup_rect, 2, border_radius=10)  # Border
+    game_over_text = game_over_font.render("GAME OVER", True, (255, 0, 0))
+    screen.blit(game_over_text, (popUpWIDTH-26, popUpHEIGTH //2))
+
+    # again-nappula
+    again_button = pygame.Rect(WIDTH//2-popUpWIDTH//2+115, HEIGHT//2-popUpHEIGTH//2+130,buttonWidth, buttonHeigth)
+    pygame.draw.rect(screen, buttonColor, again_button, border_radius=buttonBorderRadius)
+    pygame.draw.rect(screen, buttonBorderColor, again_button, 2, border_radius=buttonBorderRadius)
+    start_text = font.render("AGAIN", True, (0, 0, 0))
+    text_x = again_button.x + (again_button.width - start_text.get_width()) // 2
+    text_y = again_button.y + (again_button.height - start_text.get_height()) // 2
+    screen.blit(start_text, (text_x, text_y))
+
+    # menu-nappula
+    menu_button = pygame.Rect(WIDTH//2-popUpWIDTH//2+115, HEIGHT//2-popUpHEIGTH//2+190, buttonWidth, buttonHeigth)
+    pygame.draw.rect(screen, buttonColor, menu_button, border_radius=buttonBorderRadius)
+    pygame.draw.rect(screen, buttonBorderColor, menu_button, 2, border_radius=buttonBorderRadius)
+    start_text = font.render("MENU", True, (0, 0, 0))
+    text_x = menu_button.x + (menu_button.width - start_text.get_width()) // 2
+    text_y = menu_button.y + (menu_button.height - start_text.get_height()) // 2
+    screen.blit(start_text, (text_x, text_y))
+
+    # lopeta-nappula
+    quit_button = pygame.Rect(WIDTH//2-popUpWIDTH//2+115, HEIGHT//2-popUpHEIGTH//2+250, buttonWidth, buttonHeigth)
+    pygame.draw.rect(screen, buttonColor, quit_button, border_radius=buttonBorderRadius)
+    pygame.draw.rect(screen, buttonBorderColor, quit_button, 2, border_radius=buttonBorderRadius)
+    start_text = font.render("QUIT", True, (0, 0, 0))
+    text_x = quit_button.x + (quit_button.width - start_text.get_width()) // 2
+    text_y = quit_button.y + (quit_button.height - start_text.get_height()) // 2
+    screen.blit(start_text, (text_x, text_y))
     
+
+    for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+        pygame.quit()
+        exit()
+      elif event.type == pygame.MOUSEBUTTONDOWN:
+        x,y = event.pos
+        if again_button.collidepoint(x,y):
+          print("uudestaan")
+          game(WIDTH=WIDTH, HEIGHT=HEIGHT, screen=screen, pygame=pygame, player_color=player_color, font=font, clock=clock, main_menu=main_menu, player_name=player_name)
+        if menu_button.collidepoint(x,y):
+          print("menu")
+          main_menu()
+        if quit_button.collidepoint(x,y):
+          print("quit")   
+          pygame.quit()
+          exit()
+
 def save_high_score(player_name, score):
   try:
     with open(high_score_file, "r") as file:
@@ -214,10 +285,8 @@ def switch_level(score, level, player, player_speed, WIDTH, HEIGHT):
     player.rect.x = WIDTH // 2 - player.rect.width // 2
     player.rect.y = HEIGHT // 2 - player.rect.height // 2
     
-    print(f"Taso {level} ja pelaajan nopeus {player.speed}")
     # Generoidaan uudet esteet
     obstacles = generate_obstacles(level, WIDTH, HEIGHT, player)
-    print("moi taas")
       
   return score, level, level_up, player_speed, obstacles
 

@@ -12,16 +12,16 @@ class Player:
     self.rect.x += self.var_x
     self.rect.y += self.var_y
 
-    if keys[pygame.K_LEFT]:
+    if keys[pygame.K_LEFT] or keys[pygame.K_a]:
       self.var_x = -self.speed # Aina nappia painaessa pelaaja vaihtaa suuntaa toiseen ja lopettaa vauhdin toisessa.
       self.var_y = 0
-    if keys[pygame.K_RIGHT]:
+    if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
       self.var_x = self.speed
       self.var_y = 0
-    if keys[pygame.K_UP]:
+    if keys[pygame.K_UP] or keys[pygame.K_w]:
       self.var_x = 0
       self.var_y = -self.speed
-    if keys[pygame.K_DOWN]:
+    if keys[pygame.K_DOWN] or keys[pygame.K_s]:
       self.var_x = 0
       self.var_y = self.speed
 
