@@ -65,7 +65,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
   new_high_score_timer = 0
 
   def toista_musiikki(level):
-    pygame.mixer.music.load("audio/level1_4_music.wav")
+    pygame.mixer.music.load("level1_4_music.wav")
     pygame.mixer.music.play(-1)
   
   toista_musiikki(level)
