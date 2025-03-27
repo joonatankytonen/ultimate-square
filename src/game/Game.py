@@ -89,7 +89,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
         exit()
         
       # Jos taso on vaihtumassa, odota Enter-näppäintä
-      if level_up and event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+      if level_up and event.type == pygame.KEYDOWN and event.key in (pygame.K_RETURN, pygame.K_SPACE):
         level_up = False
         print(f"Taso {level} alkaa!")
       
@@ -172,7 +172,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
       else:
         level_up_text = mainFont.render(f"Taso {level} alkaa!", True, (0, 128, 0))
         
-      instruction_text = font.render("Paina ENTER jatkaaksesi", True, (0, 0, 0))
+      instruction_text = font.render("Paina SPACE jatkaaksesi", True, (0, 0, 0))
       screen.blit(level_up_text, (WIDTH // 2 - level_up_text.get_width() // 2, HEIGHT // 2 - 50))
       screen.blit(instruction_text, (WIDTH // 2 - instruction_text.get_width() // 2, HEIGHT // 2 + 20))
 
