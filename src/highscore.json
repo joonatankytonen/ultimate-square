@@ -1,5 +1,9 @@
 [
   {
+    "name": "Hannzzz",
+    "score": 120
+  },
+  {
     "name": "John",
     "score": 95
   },
@@ -14,9 +18,5 @@
   {
     "name": "Iida",
     "score": 58
-  },
-  {
-    "name": "Timo",
-    "score": 51
   }
 ]
