@@ -322,7 +322,7 @@ def generate_obstacles(level, WIDTH, HEIGHT, player):
 def draw_health_bar(heart_image, heart_rect, elama):
   font = pygame.font.Font(None, 36)
   """Piirtää 'Life:' tekstin ja sen viereen sydämet elämien mukaan."""
-  text_left = font.render("Life:", True, (0, 0, 0))
+  text_left = font.render("", True, (0, 0, 0))
   screen.blit(text_left, (20, 20))  # Näytetään "Life:" teksti
 
   # Lasketaan sydänten aloituspaikka suhteessa tekstiin
