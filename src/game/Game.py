@@ -64,9 +64,21 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
     screen.fill((220, 220, 220))  # Täytetään näyttö valeanharmaaksi
     pygame.draw.rect(screen, (0, 0, 0), (0, 0, WIDTH, HEIGHT), 10)  # Piirretään reunat mustaksi
 
-    # Piirrä esteet
+     # Piirrä esteet
+    # Esteiden ulkonäkö – tasosta riippuen
     for obstacle in obstacles:
-        pygame.draw.rect(screen, (128, 0, 128), obstacle)
+      if level == 5:
+          # Erikoisefekti: väri vaihtelee ajan mukaan
+          time = pygame.time.get_ticks() // 100  # Vaihtuu noin 10x sekunnissa
+          red = 128 + (time % 127)  # 128–255 välillä vilkkuu
+          green = 64 + ((time * 2) % 128)
+          blue = 255 - (time % 128)
+          special_color = (red % 256, green % 256, blue % 256)
+
+          # Pyöristetty este (rounded rectangle)
+          pygame.draw.rect(screen, special_color, obstacle, border_radius=10)
+      else:
+          pygame.draw.rect(screen, (128, 0, 128), obstacle)
 
     # Piirrä pelaaja
     player.draw(screen=screen)
