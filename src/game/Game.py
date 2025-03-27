@@ -5,6 +5,8 @@ from classes.Player import Player
 from classes.Food import Food
 from game.Main_menu import *
 from init_pygame import *
+import pygame.mixer
+
 
 # Tiedostopolku highscore.json:iin
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -12,6 +14,8 @@ high_score_file = os.path.join(BASE_DIR, "highscore.json")
 
 # Peli
 def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, player_name):  # <-- Lisätty player_name!
+  
+  pygame.mixer.init()
   
   print(f"pelaajan nimi on {player_name}")
   mainFont = pygame.font.Font(None, 60)
@@ -60,10 +64,16 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
   new_high_score = False
   new_high_score_timer = 0
 
+  def toista_musiikki(level):
+    pygame.mixer.music.load("audio/level1_4_music.wav")
+    pygame.mixer.music.play(-1)
+  
+  toista_musiikki(level)
+  
   while running:
     screen.fill((220, 220, 220))  # Täytetään näyttö valeanharmaaksi
     pygame.draw.rect(screen, (0, 0, 0), (0, 0, WIDTH, HEIGHT), 10)  # Piirretään reunat mustaksi
-
+    
      # Piirrä esteet
     # Esteiden ulkonäkö – tasosta riippuen
     for obstacle in obstacles:
@@ -92,6 +102,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
       if level_up and event.type == pygame.KEYDOWN and event.key in (pygame.K_RETURN, pygame.K_SPACE):
         level_up = False
         print(f"Taso {level} alkaa!")
+        toista_musiikki(level)
       
     if not game_over and not level_up:
       keys = pygame.key.get_pressed()
@@ -131,6 +142,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
         # Päivitä esteet vain jos taso vaihtuu
         if level_up:
             obstacles = new_obstacles
+            pygame.mixer.music.stop()
 
       # Tarkistetaan, tuleeko törmäyksiä seinien kanssa
       if player.rect.x <= 5 or player.rect.x + player.rect.width >= WIDTH - 5 or player.rect.y <= 5 or player.rect.y + player.rect.height >= HEIGHT - 5:
@@ -180,6 +192,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
     clock.tick(30)
 
 def elematLoppu(player_name, score, main_menu, player_color):
+  pygame.mixer.music.stop()
   game_over = True
   save_high_score(player_name, score)  # <-- Tallennus
   new_high_score = True
