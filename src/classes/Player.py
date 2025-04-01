@@ -1,4 +1,4 @@
-from init_pygame import *
+from src.init_pygame import *
 
 class Player:
   def __init__(self, x=WIDTH/2, y=HEIGHT/2, var_x=0, var_y=0, width=40, height=40, color=(255, 0, 0), speed=5):

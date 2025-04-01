@@ -1,4 +1,4 @@
-from init_pygame import *
+from src.init_pygame import *
 
 class Food:
   def __init__(self,x,y,width=15, height=15, color=(254,141,77)):
