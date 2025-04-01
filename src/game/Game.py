@@ -20,9 +20,6 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
   print(f"pelaajan nimi on {player_name}")
   mainFont = pygame.font.Font(None, 60)
 
-  # elämä
-  elama = 3
-
   # sydämmen kuvat
   heart_image = pygame.image.load("imgs/heart.png")
   heart_image = pygame.transform.scale(heart_image, (30, 30))  
@@ -116,11 +113,11 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
       # Tarkistetaan törmäykset esteisiin
       for obstacle in obstacles:
           if player.rect.colliderect(obstacle):
-              elama -= 1
-              print(f"Osuit esteeseen! Elämä jäljellä: {elama}")
+              player.kill()
+              print(f"Osuit esteeseen! Elämä jäljellä: {player.life}")
               player.rect.x = WIDTH // 2 - player.rect.width // 2
               player.rect.y = HEIGHT // 2 - player.rect.height // 2
-              if elama <= 0:
+              if player.life <= 0:
                 elematLoppu(player_name=player_name, score=score, main_menu=main_menu, player_color=player_color)
       # Jos ruokaa ei ole, spawnaa yksi
       if food is None:
@@ -151,17 +148,17 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
 
       # Tarkistetaan, tuleeko törmäyksiä seinien kanssa
       if player.rect.x <= 5 or player.rect.x + player.rect.width >= WIDTH - 5 or player.rect.y <= 5 or player.rect.y + player.rect.height >= HEIGHT - 5:
-        elama -= 1
-        print(f"Elämä jäljellä: {elama}")
+        player.kill()
+        print(f"Elämä jäljellä: {player.life}")
         # Uudelleensijoittaminen kuoleman jälkeen 
         player.rect.x = WIDTH // 2 - player.rect.width// 2
         player.rect.y = HEIGHT // 2 - player.rect.height// 2
         
-        if elama <= 0:
+        if player.life <= 0:
           elematLoppu(player_name=player_name, score=score, main_menu=main_menu, player_color=player_color)
 
 
-    draw_health_bar(heart_image=heart_image, heart_rect=heart_rect, elama=elama)
+    draw_health_bar(heart_image=heart_image, heart_rect=heart_rect, elama=player.life)
 
     # Tekstin renderöinti
     text_middle = font.render(f"Taso {level}", True, (0, 0, 0))  # Väri (mustaa)
