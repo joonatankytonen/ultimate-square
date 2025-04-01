@@ -1,16 +1,16 @@
 import random  
 import json
 import os
-from classes.Player import Player
-from classes.Food import Food
-from game.Main_menu import *
-from init_pygame import *
+from src.classes.Player import Player
+from src.classes.Food import Food
+from src.game.Main_menu import *
+from src.init_pygame import *
 import pygame.mixer
 
 
 # Tiedostopolku highscore.json:iin
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-high_score_file = os.path.join(BASE_DIR, "highscore.json")
+high_score_file = os.path.join(BASE_DIR, "../highscore.json")
 
 # Peli
 def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, player_name):  # <-- Lisätty player_name!
@@ -19,9 +19,6 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
   
   print(f"pelaajan nimi on {player_name}")
   mainFont = pygame.font.Font(None, 60)
-
-  # elämä
-  elama = 3
 
   # sydämmen kuvat
   heart_image = pygame.image.load("imgs/heart.png")
@@ -32,7 +29,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
   food = None
   
   # Luo pelaaja
-  player = Player(color=(player_color))
+  player = Player(color=player_color)
   player.rect.x = WIDTH // 2 - player.rect.width // 2
   player.rect.y = HEIGHT // 2 - player.rect.height // 2
   
@@ -66,9 +63,9 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
 
   def toista_musiikki(level):
     if level == 5:
-      pygame.mixer.music.load("level5_music.wav")
+      pygame.mixer.music.load("music/level5_music.wav")
     else :
-      pygame.mixer.music.load("level1_4_music.wav")
+      pygame.mixer.music.load("music/level1_4_music.wav")
     pygame.mixer.music.play(-1)
   
   toista_musiikki(level)
@@ -116,11 +113,11 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
       # Tarkistetaan törmäykset esteisiin
       for obstacle in obstacles:
           if player.rect.colliderect(obstacle):
-              elama -= 1
-              print(f"Osuit esteeseen! Elämä jäljellä: {elama}")
+              player.kill()
+              print(f"Osuit esteeseen! Elämä jäljellä: {player.life}")
               player.rect.x = WIDTH // 2 - player.rect.width // 2
               player.rect.y = HEIGHT // 2 - player.rect.height // 2
-              if elama <= 0:
+              if player.life <= 0:
                 elematLoppu(player_name=player_name, score=score, main_menu=main_menu, player_color=player_color)
       # Jos ruokaa ei ole, spawnaa yksi
       if food is None:
@@ -151,17 +148,17 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
 
       # Tarkistetaan, tuleeko törmäyksiä seinien kanssa
       if player.rect.x <= 5 or player.rect.x + player.rect.width >= WIDTH - 5 or player.rect.y <= 5 or player.rect.y + player.rect.height >= HEIGHT - 5:
-        elama -= 1
-        print(f"Elämä jäljellä: {elama}")
+        player.kill()
+        print(f"Elämä jäljellä: {player.life}")
         # Uudelleensijoittaminen kuoleman jälkeen 
         player.rect.x = WIDTH // 2 - player.rect.width// 2
         player.rect.y = HEIGHT // 2 - player.rect.height// 2
         
-        if elama <= 0:
+        if player.life <= 0:
           elematLoppu(player_name=player_name, score=score, main_menu=main_menu, player_color=player_color)
 
 
-    draw_health_bar(heart_image=heart_image, heart_rect=heart_rect, elama=elama)
+    draw_health_bar(heart_image=heart_image, heart_rect=heart_rect, elama=player.life)
 
     # Tekstin renderöinti
     text_middle = font.render(f"Taso {level}", True, (0, 0, 0))  # Väri (mustaa)
@@ -350,14 +347,7 @@ def generate_obstacles(level, WIDTH, HEIGHT, player):
 
   
 def draw_health_bar(heart_image, heart_rect, elama):
-  font = pygame.font.Font(None, 36)
-  """Piirtää 'Life:' tekstin ja sen viereen sydämet elämien mukaan."""
-  text_left = font.render("", True, (0, 0, 0))
-  screen.blit(text_left, (20, 20))  # Näytetään "Life:" teksti
-
-  # Lasketaan sydänten aloituspaikka suhteessa tekstiin
-  text_width = text_left.get_width()
-  hearts_x_start = 30 + text_width  # Siirretään sydämet tekstin oikealle puolelle
+  hearts_x_start = 20# Siirretään sydämet tekstin oikealle puolelle
 
   for i in range(elama):  # Piirretään niin monta sydäntä kuin on elämiä
       screen.blit(heart_image, (hearts_x_start + i * (heart_rect.width + 5), 15))  # Sydämet tekstin jälkeen

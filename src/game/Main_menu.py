@@ -1,12 +1,12 @@
 from . import Game
 import os
 import json
-from init_pygame import *
-import game.Game as elama
+from src.init_pygame import *
+
 
 # HAKEMISTON MÄÄRITYS highscore.json tiedostolle
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-high_score_file = os.path.join(BASE_DIR, "highscore.json")
+high_score_file = os.path.join(BASE_DIR, "../highscore.json")
 
 # Fontin luominen
 font = pygame.font.Font(None, 20)
