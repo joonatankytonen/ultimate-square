@@ -79,19 +79,21 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
     
      # Piirrä esteet
     # Esteiden ulkonäkö – tasosta riippuen
+    # Esteiden ulkonäkö (Level 5: vilkkuvat)
     for obstacle in obstacles:
       if level == 5:
-          # Erikoisefekti: väri vaihtelee ajan mukaan
-          time = pygame.time.get_ticks() // 100  # Vaihtuu noin 10x sekunnissa
-          red = 128 + (time % 127)  # 128–255 välillä vilkkuu
-          green = 64 + ((time * 2) % 128)
-          blue = 255 - (time % 128)
-          special_color = (red % 256, green % 256, blue % 256)
+        time = pygame.time.get_ticks()
+        visible = (time // 1000) % 3 != 2  # Näkyy 2s, piilossa 1s
 
-          # Pyöristetty este (rounded rectangle)
-          pygame.draw.rect(screen, special_color, obstacle, border_radius=10)
+        if visible:
+            red = 128 + (time // 100 % 127)
+            green = 64 + ((time // 100 * 2) % 128)
+            blue = 255 - (time // 100 % 128)
+            special_color = (red % 256, green % 256, blue % 256)
+            pygame.draw.rect(screen, special_color, obstacle, border_radius=10)
       else:
           pygame.draw.rect(screen, (128, 0, 128), obstacle)
+
 
     # Piirrä pelaaja
     player.draw(screen=screen)
@@ -321,19 +323,31 @@ def switch_level(score, level, player, player_speed, WIDTH, HEIGHT):
 # Funktio esteiden generointiin
 def generate_obstacles(level, WIDTH, HEIGHT, player):
     obstacles = []
-    if level >= 2:  # Esteitä vain level 2 alkaen
-        for _ in range(level):  # Lisää yhtä monta estettä kuin level
-            while True:
-                x = random.randint(50, WIDTH - 150)
-                y = random.randint(50, HEIGHT - 50)
-                obstacle = pygame.Rect(x, y, 100, 30)  # Kiinteän kokoinen este
-                
-                # Varmistetaan, ettei este ole pelaajan aloituspaikalla
+    min_distance_from_edge = 80  # ettei tule liian reunaan
+    min_distance_between_obstacles = 120  # ettei tule liian lähelle toisiaan
+    max_attempts = 100  # ettei jää ikuiseen silmukkaan
+
+    if level >= 2:
+        for _ in range(level):
+            attempts = 0
+            while attempts < max_attempts:
+                x = random.randint(min_distance_from_edge, WIDTH - min_distance_from_edge - 100)
+                y = random.randint(min_distance_from_edge, HEIGHT - min_distance_from_edge - 30)
+                new_obstacle = pygame.Rect(x, y, 100, 30)
+
+                # Ei pelaajan aloituspaikalle
                 player_area = pygame.Rect(WIDTH//2 - 50, HEIGHT//2 - 50, 100, 100)
-                if not obstacle.colliderect(player_area):
-                    obstacles.append(obstacle)
+
+                # Ei liian lähelle muita esteitä
+                too_close = any(new_obstacle.colliderect(o.inflate(min_distance_between_obstacles, min_distance_between_obstacles)) for o in obstacles)
+
+                if not new_obstacle.colliderect(player_area) and not too_close:
+                    obstacles.append(new_obstacle)
                     break
+
+                attempts += 1
     return obstacles
+
   
 def draw_health_bar(heart_image, heart_rect, elama):
   font = pygame.font.Font(None, 36)
