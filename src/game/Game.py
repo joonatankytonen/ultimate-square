@@ -60,13 +60,6 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
   game_over = False
   new_high_score = False
   new_high_score_timer = 0
-
-  def toista_musiikki(level):
-    if level == 5:
-      pygame.mixer.music.load("music/level5_music.wav")
-    else :
-      pygame.mixer.music.load("music/level1_4_music.wav")
-    pygame.mixer.music.play(-1)
   
   toista_musiikki(level)
   
@@ -351,3 +344,10 @@ def draw_health_bar(heart_image, heart_rect, elama):
 
   for i in range(elama):  # Piirretään niin monta sydäntä kuin on elämiä
       screen.blit(heart_image, (hearts_x_start + i * (heart_rect.width + 5), 15))  # Sydämet tekstin jälkeen
+      
+def toista_musiikki(level):
+  if level == 5:
+    pygame.mixer.music.load("music/level5_music.wav")
+  else :
+    pygame.mixer.music.load("music/level1_4_music.wav")
+  pygame.mixer.music.play(-1)
