@@ -1,5 +1,9 @@
 [
   {
+    "name": "MogoJohn",
+    "score": 123
+  },
+  {
     "name": "Hannzzz",
     "score": 120
   },
@@ -8,15 +12,11 @@
     "score": 95
   },
   {
+    "name": "MogoJohn",
+    "score": 87
+  },
+  {
     "name": "ARE",
     "score": 70
-  },
-  {
-    "name": "Ekito",
-    "score": 68
-  },
-  {
-    "name": "Iida",
-    "score": 58
   }
 ]
