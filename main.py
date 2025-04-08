@@ -1,3 +1,4 @@
+import sys
 from src.game import Main_menu
 from src.init_pygame import *
 
@@ -5,3 +6,4 @@ from src.init_pygame import *
 Main_menu.logo_splash()
 
 pygame.quit()
+sys.exit()

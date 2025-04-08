@@ -1,6 +1,7 @@
-from . import Game
 import os
 import json
+import sys
+from . import Game
 from src.init_pygame import *
 
 
@@ -103,7 +104,7 @@ def main_menu():
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
         pygame.quit()
-        exit()
+        sys.exit()
 
       # Hiiren klikkaukset (vanha toiminta säilyy)
       elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -145,7 +146,6 @@ def ask_player_name():
     active = True
 
     input_box = pygame.Rect(WIDTH // 2 - 150, HEIGHT // 2, 300, 60)  # Leveämpi laatikko
-    color_inactive = pygame.Color('lightskyblue3')
     color_active = pygame.Color('dodgerblue2')
     color = color_active
 
@@ -153,7 +153,7 @@ def ask_player_name():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                exit()
+                sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     if player_name.strip() != "":
@@ -249,7 +249,7 @@ def guide_screen():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                exit()
+                sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
             if back_button.collidepoint(x, y):
@@ -284,7 +284,7 @@ def logo_splash():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                exit()
+                sys.exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:  # ENTER-painike
                     main_menu()

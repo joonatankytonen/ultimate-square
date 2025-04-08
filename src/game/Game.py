@@ -1,11 +1,12 @@
 import random  
 import json
 import os
+import sys
+import pygame.mixer
 from src.classes.Player import Player
 from src.classes.Food import Food
 from src.game.Main_menu import *
 from src.init_pygame import *
-import pygame.mixer
 
 
 # Tiedostopolku highscore.json:iin
@@ -91,7 +92,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
         pygame.quit()
-        exit()
+        sys.exit()
         
       # Jos taso on vaihtumassa, odota Enter-näppäintä
       if level_up and event.type == pygame.KEYDOWN and event.key in (pygame.K_RETURN, pygame.K_SPACE):
@@ -260,7 +261,7 @@ def popUpWindow(main_menu, player_name, player_color):
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
         pygame.quit()
-        exit()
+        sys.exit()
       elif event.type == pygame.MOUSEBUTTONDOWN:
         x,y = event.pos
         if again_button.collidepoint(x,y):
@@ -272,7 +273,7 @@ def popUpWindow(main_menu, player_name, player_color):
         if quit_button.collidepoint(x,y):
           print("quit")   
           pygame.quit()
-          exit()
+          sys.exit()
 
 def save_high_score(player_name, score):
   try:
