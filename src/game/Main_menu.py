@@ -4,19 +4,12 @@ import sys
 from . import Game
 from src.init_pygame import *
 
-
 # HAKEMISTON MÄÄRITYS highscore.json tiedostolle
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 high_score_file = os.path.join(BASE_DIR, "../highscore.json")
 
-# Fontin luominen
-font = pygame.font.Font(None, 20)
-
 # logoloinen tähän
 game_title = pygame.image.load("imgs/ultimate square 2.jpg")
-
-# pelaajan väri
-player_color = (255, 0, 0) # oletusväri punainen
 
 # fontti-pontti asetukset
 font = pygame.font.Font(None, 36)
@@ -39,7 +32,6 @@ def load_high_scores():
         return []
 
 def main_menu():
-  global player_color
   running = True
   selected_color_index = 0  # uutta: valittu väri nuolinäppäimillä
   color_keys = list(colors.keys())
@@ -80,11 +72,8 @@ def main_menu():
       screen.blit(text, (button_x, button_y + 65))
       button_x += 90
 
-    # Painikkeita vielä vähän alemmas
-    button_y += 130
-
     # START-nappula
-    start_button = pygame.Rect(WIDTH // 2 + 10, button_y, 120, 50)
+    start_button = pygame.Rect(WIDTH // 2 + 20, HEIGHT-150, 120, 50)
     pygame.draw.rect(screen, (211, 211, 211), start_button, border_radius=15)
     start_text = font.render("START", True, (0, 0, 0))
     text_x = start_button.x + (start_button.width - start_text.get_width()) // 2
@@ -92,7 +81,7 @@ def main_menu():
     screen.blit(start_text, (text_x, text_y))
 
     # OHJEET-nappula
-    ohjeet_button = pygame.Rect(WIDTH // 2 - 130, button_y, 120, 50)
+    ohjeet_button = pygame.Rect(WIDTH // 2 - 130, HEIGHT-150, 120, 50)
     pygame.draw.rect(screen, (211, 211, 211), ohjeet_button, border_radius=15)
     ohjeet_text = font.render("GUIDE", True, (0, 0, 0))
     text_x = ohjeet_button.x + (ohjeet_button.width - ohjeet_text.get_width()) // 2
@@ -193,7 +182,6 @@ def ask_player_name():
         screen.blit(txt_surface, (text_x, text_y))
 
         pygame.display.flip()
-        clock.tick(30)
 
 # ohjeet sivu
 def guide_screen():

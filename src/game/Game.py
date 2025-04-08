@@ -2,12 +2,10 @@ import random
 import json
 import os
 import sys
-import pygame.mixer
 from src.classes.Player import Player
 from src.classes.Food import Food
 from src.game.Main_menu import *
 from src.init_pygame import *
-
 
 # Tiedostopolku highscore.json:iin
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,8 +27,10 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
   # Ruoka muuttujat
   food = None
   
+  # Pelaajan aloitusnopeus
+  player_speed = 5
   # Luo pelaaja
-  player = Player(color=player_color)
+  player = Player(color=player_color, speed=player_speed)
   player.rect.x = WIDTH // 2 - player.rect.width // 2
   player.rect.y = HEIGHT // 2 - player.rect.height // 2
   
@@ -50,17 +50,11 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
   
   # Tasonvaihto lippu
   level_up = False
-  
-  # Pelaajan aloitusnopeus
-  player_speed = 5
 
   # Esteet (tyhjä alussa, generoidaan level 2 alkaen)
   obstacles = generate_obstacles(level, WIDTH, HEIGHT, player)
 
   running = True
-  game_over = False
-  new_high_score = False
-  new_high_score_timer = 0
   
   toista_musiikki(level)
   
@@ -68,7 +62,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
     screen.fill((220, 220, 220))  # Täytetään näyttö valeanharmaaksi
     pygame.draw.rect(screen, (0, 0, 0), (0, 0, WIDTH, HEIGHT), 10)  # Piirretään reunat mustaksi
     
-     # Piirrä esteet
+    # Piirrä esteet
     # Esteiden ulkonäkö – tasosta riippuen
     # Esteiden ulkonäkö (Level 5: vilkkuvat)
     for obstacle in obstacles:
@@ -85,7 +79,6 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
       else:
           pygame.draw.rect(screen, (128, 0, 128), obstacle)
 
-
     # Piirrä pelaaja
     player.draw(screen=screen)
 
@@ -100,17 +93,19 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
         print(f"Taso {level} alkaa!")
         toista_musiikki(level)
       
-    if not game_over and not level_up:
+    if not level_up:
       keys = pygame.key.get_pressed()
       player.move(keys=keys)
 
       # Tarkistetaan törmäykset esteisiin
+      #? Mahdollinen funktio tästä?
       for obstacle in obstacles:
           if player.rect.colliderect(obstacle):
               player.kill()
               print(f"Osuit esteeseen! Elämä jäljellä: {player.life}")
               player.rect.x = WIDTH // 2 - player.rect.width // 2
               player.rect.y = HEIGHT // 2 - player.rect.height // 2
+              #? Tästä myös?
               if player.life <= 0:
                 elematLoppu(player_name=player_name, score=score, main_menu=main_menu, player_color=player_color)
       # Jos ruokaa ei ole, spawnaa yksi
@@ -129,6 +124,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
         food.draw(screen=screen)
 
       # Jos pelaaja osuu ruokaan, poista se ja spawnaa uusi
+      #? Funktio?
       if food and player.rect.colliderect(food.rect):
         print("syöty")
         score += score_increment  # Lisää pistettä ruokaa syödessä
@@ -141,6 +137,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
             pygame.mixer.music.stop()
 
       # Tarkistetaan, tuleeko törmäyksiä seinien kanssa
+      #? Funktio?
       if player.rect.x <= 5 or player.rect.x + player.rect.width >= WIDTH - 5 or player.rect.y <= 5 or player.rect.y + player.rect.height >= HEIGHT - 5:
         player.kill()
         print(f"Elämä jäljellä: {player.life}")
@@ -148,6 +145,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
         player.rect.x = WIDTH // 2 - player.rect.width// 2
         player.rect.y = HEIGHT // 2 - player.rect.height// 2
         
+        #? Funktio?
         if player.life <= 0:
           elematLoppu(player_name=player_name, score=score, main_menu=main_menu, player_color=player_color)
 
@@ -155,7 +153,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
     draw_health_bar(heart_image=heart_image, heart_rect=heart_rect, elama=player.life)
 
     # Tekstin renderöinti
-    text_middle = font.render(f"Taso {level}", True, (0, 0, 0))  # Väri (mustaa)
+    text_middle = font.render(f"Level {level}", True, (0, 0, 0))  # Väri (mustaa)
     text_right = font.render(f"Score: {score}" , True, (0, 0, 0))
     
     # Piirrä teksti ruudulle (esimerkiksi ylhäällä)
@@ -167,10 +165,6 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
     high_score_text = font.render(f"High Score: {highest_score}", True, (0, 0, 0))
     screen.blit(high_score_text, (WIDTH - high_score_text.get_width() - 20, 50))
     
-    if new_high_score and pygame.time.get_ticks() - new_high_score_timer < 1000: 
-      new_high_score_text = font.render("Uusi High Score!", True, (255, 0, 0))
-      screen.blit(new_high_score_text, (WIDTH // 2 - new_high_score_text.get_width() // 2, 50))
-      
     # Jos taso vaihtuu
     # Jos päästään tasolle 5 -> Endless Mode teksti
     if level_up:
@@ -178,9 +172,9 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
         large_font = pygame.font.Font(None, 100)
         level_up_text = large_font.render("ENDLESS MODE", True, (192, 0, 0))
       else:
-        level_up_text = mainFont.render(f"Taso {level} alkaa!", True, (0, 128, 0))
+        level_up_text = mainFont.render(f"Level {level} begins!", True, (0, 128, 0))
         
-      instruction_text = font.render("Paina SPACE jatkaaksesi", True, (0, 0, 0))
+      instruction_text = font.render("Press SPACE to continue.", True, (0, 0, 0))
       screen.blit(level_up_text, (WIDTH // 2 - level_up_text.get_width() // 2, HEIGHT // 2 - 50))
       screen.blit(instruction_text, (WIDTH // 2 - instruction_text.get_width() // 2, HEIGHT // 2 + 20))
 
@@ -189,10 +183,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
 
 def elematLoppu(player_name, score, main_menu, player_color):
   pygame.mixer.music.stop()
-  game_over = True
   save_high_score(player_name, score)  # <-- Tallennus
-  new_high_score = True
-  new_high_score_timer = pygame.time.get_ticks()
   pygame.display.update()  # Update display immediately to show the text
   pygame.time.wait(500)
   popUpWindow(main_menu=main_menu, player_name=player_name, player_color=player_color)
@@ -256,7 +247,6 @@ def popUpWindow(main_menu, player_name, player_color):
     text_x = quit_button.x + (quit_button.width - start_text.get_width()) // 2
     text_y = quit_button.y + (quit_button.height - start_text.get_height()) // 2
     screen.blit(start_text, (text_x, text_y))
-    
 
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
@@ -297,12 +287,10 @@ def switch_level(score, level, player, player_speed, WIDTH, HEIGHT):
     print("Level vaihtuu")
     level+=1
     level_up = True
-    player_speed += 1.5 # nopeus kasvaa
     print(f"Taso: {level}, Pelaajan nopeus: {player_speed}")
     
-    player.speed = player_speed
-    
     # Tason vaihtuessa pelaaja aloittaa keskeltä
+    #? Pelaaja luokkaa metodiksi?
     player.rect.x = WIDTH // 2 - player.rect.width // 2
     player.rect.y = HEIGHT // 2 - player.rect.height // 2
     
@@ -339,7 +327,6 @@ def generate_obstacles(level, WIDTH, HEIGHT, player):
                 attempts += 1
     return obstacles
 
-  
 def draw_health_bar(heart_image, heart_rect, elama):
   hearts_x_start = 20# Siirretään sydämet tekstin oikealle puolelle
 
