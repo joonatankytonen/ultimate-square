@@ -31,8 +31,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
   player_speed = 5
   # Luo pelaaja
   player = Player(color=player_color, speed=player_speed)
-  player.rect.x = WIDTH // 2 - player.rect.width // 2
-  player.rect.y = HEIGHT // 2 - player.rect.height // 2
+  player.startPosition()
   
   # Pelin score 
   score = 0
@@ -98,16 +97,10 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
       player.move(keys=keys)
 
       # Tarkistetaan törmäykset esteisiin
-      #? Mahdollinen funktio tästä?
       for obstacle in obstacles:
           if player.rect.colliderect(obstacle):
-              player.kill()
-              print(f"Osuit esteeseen! Elämä jäljellä: {player.life}")
-              player.rect.x = WIDTH // 2 - player.rect.width // 2
-              player.rect.y = HEIGHT // 2 - player.rect.height // 2
-              #? Tästä myös?
-              if player.life <= 0:
-                elematLoppu(player_name=player_name, score=score, main_menu=main_menu, player_color=player_color)
+            playerDied(player=player, player_name=player_name, score=score, main_menu=main_menu, player_color=player_color)
+
       # Jos ruokaa ei ole, spawnaa yksi
       if food is None:
           while True:
@@ -124,7 +117,6 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
         food.draw(screen=screen)
 
       # Jos pelaaja osuu ruokaan, poista se ja spawnaa uusi
-      #? Funktio?
       if food and player.rect.colliderect(food.rect):
         print("syöty")
         score += score_increment  # Lisää pistettä ruokaa syödessä
@@ -137,18 +129,8 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
             pygame.mixer.music.stop()
 
       # Tarkistetaan, tuleeko törmäyksiä seinien kanssa
-      #? Funktio?
       if player.rect.x <= 5 or player.rect.x + player.rect.width >= WIDTH - 5 or player.rect.y <= 5 or player.rect.y + player.rect.height >= HEIGHT - 5:
-        player.kill()
-        print(f"Elämä jäljellä: {player.life}")
-        # Uudelleensijoittaminen kuoleman jälkeen 
-        player.rect.x = WIDTH // 2 - player.rect.width// 2
-        player.rect.y = HEIGHT // 2 - player.rect.height// 2
-        
-        #? Funktio?
-        if player.life <= 0:
-          elematLoppu(player_name=player_name, score=score, main_menu=main_menu, player_color=player_color)
-
+        playerDied(player=player, player_name=player_name, score=score, main_menu=main_menu, player_color=player_color)
 
     draw_health_bar(heart_image=heart_image, heart_rect=heart_rect, elama=player.life)
 
@@ -180,6 +162,13 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
 
     pygame.display.flip()
     clock.tick(30)
+
+def playerDied(player, player_name, score, main_menu, player_color):
+  player.kill()
+  print(f"Osuit esteeseen! Elämä jäljellä: {player.life}")
+  player.startPosition()
+  if player.life <= 0:
+    elematLoppu(player_name=player_name, score=score, main_menu=main_menu, player_color=player_color)
 
 def elematLoppu(player_name, score, main_menu, player_color):
   pygame.mixer.music.stop()
@@ -287,13 +276,13 @@ def switch_level(score, level, player, player_speed, WIDTH, HEIGHT):
     print("Level vaihtuu")
     level+=1
     level_up = True
+    player_speed += 1.5
     print(f"Taso: {level}, Pelaajan nopeus: {player_speed}")
+    player.speed = player_speed
     
     # Tason vaihtuessa pelaaja aloittaa keskeltä
-    #? Pelaaja luokkaa metodiksi?
-    player.rect.x = WIDTH // 2 - player.rect.width // 2
-    player.rect.y = HEIGHT // 2 - player.rect.height // 2
-    
+    player.startPosition()
+
     # Generoidaan uudet esteet
     obstacles = generate_obstacles(level, WIDTH, HEIGHT, player)
       
