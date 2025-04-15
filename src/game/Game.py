@@ -172,7 +172,6 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
           pygame.mixer.Sound("music/endlessmode.wav").play()
           endless_sound_played = True
 
-        large_font = pygame.font.Font(None, 100)
         instruction_text = font.render("Paina SPACE jatkaaksesi", True, (0, 0, 0))
         screen.blit(instruction_text, (WIDTH // 2 - instruction_text.get_width() // 2, HEIGHT // 2 + 20))
 
@@ -196,10 +195,7 @@ def playerDied(player, player_name, score, main_menu, player_color, tormays_aani
 
 def elematLoppu(player_name, score, main_menu, player_color):
   pygame.mixer.music.stop()
-  game_over = True
   save_high_score(player_name, score)  # <-- Tallennus
-  new_high_score = True
-  new_high_score_timer = pygame.time.get_ticks()
   pygame.display.update()  # Update display immediately to show the text
   pygame.time.wait(500)
   popUpWindow(main_menu=main_menu, player_name=player_name, player_color=player_color)
