@@ -5,8 +5,8 @@ from . import Game
 from src.init_pygame import *
 
 # HAKEMISTON MÄÄRITYS highscore.json tiedostolle
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-high_score_file = os.path.join(BASE_DIR, "../highscore.json")
+BASE_DIR = os.path.dirname(sys.executable if getattr(sys, 'frozen', False) else (__file__))
+high_score_file = os.path.join(BASE_DIR, "../../highscore.json")
 
 # logoloinen tähän
 game_title = pygame.image.load("imgs/ultimate square 2.jpg")

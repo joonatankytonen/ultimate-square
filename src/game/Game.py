@@ -9,8 +9,8 @@ from src.init_pygame import *
 import pygame.mixer
 
 # Tiedostopolku highscore.json:iin
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-high_score_file = os.path.join(BASE_DIR, "../highscore.json")
+BASE_DIR = os.path.dirname(sys.executable if getattr(sys, 'frozen', False) else (__file__))
+high_score_file = os.path.join(BASE_DIR, "../../highscore.json")
 
 # Peli
 def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, player_name):  
@@ -189,8 +189,7 @@ def playerDied(player, player_name, score, main_menu, player_color, tormays_aani
   tormays_aani.play()
   player.kill()
   print(f"Osuit esteeseen! Elämä jäljellä: {player.life}")
-  player.rect.x = WIDTH // 2 - player.rect.width // 2
-  player.rect.y = HEIGHT // 2 - player.rect.height // 2
+  player.startPosition()
   if player.life <= 0:
     elematLoppu(player_name=player_name, score=score, main_menu=main_menu, player_color=player_color)
 
