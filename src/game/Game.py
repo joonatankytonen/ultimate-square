@@ -29,8 +29,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
 
   # Luo pelaaja
   player = Player(color=player_color)
-  player.rect.x = WIDTH // 2 - player.rect.width // 2
-  player.rect.y = HEIGHT // 2 - player.rect.height // 2
+  player.startPosition()
 
   # Pelin score
   score = 0
@@ -112,14 +111,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
 
       for obstacle in obstacles:
         if player.rect.colliderect(obstacle):
-          tormays_aani.play()
-          player.kill()
-          print(f"Osuit esteeseen! Elämä jäljellä: {player.life}")
-          player.rect.x = WIDTH // 2 - player.rect.width // 2
-          player.rect.y = HEIGHT // 2 - player.rect.height // 2
-          if player.life <= 0:
-            elematLoppu(player_name=player_name, score=score, main_menu=main_menu, player_color=player_color)
-
+          playerDied(player=player, player_name=player_name, score=score, main_menu=main_menu, player_color=player_color, tormays_aani=tormays_aani)
       if food is None:
         while True:
           x = random.randint(50, WIDTH - 50)
@@ -146,13 +138,7 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
             tasonnousu_aani.play()
 
       if player.rect.x <= 5 or player.rect.x + player.rect.width >= WIDTH - 5 or player.rect.y <= 5 or player.rect.y + player.rect.height >= HEIGHT - 5:
-        tormays_aani.play()
-        player.kill()
-        print(f"Elämä jäljellä: {player.life}")
-        player.rect.x = WIDTH // 2 - player.rect.width // 2
-        player.rect.y = HEIGHT // 2 - player.rect.height // 2
-        if player.life <= 0:
-          elematLoppu(player_name=player_name, score=score, main_menu=main_menu, player_color=player_color)
+        playerDied(player=player, player_name=player_name, score=score, main_menu=main_menu, player_color=player_color, tormays_aani=tormays_aani)
 
     draw_health_bar(heart_image=heart_image, heart_rect=heart_rect, elama=player.life)
 
@@ -198,6 +184,15 @@ def game(WIDTH, HEIGHT, screen, pygame, player_color, font, clock, main_menu, pl
 
     pygame.display.flip()
     clock.tick(30)
+
+def playerDied(player, player_name, score, main_menu, player_color, tormays_aani):
+  tormays_aani.play()
+  player.kill()
+  print(f"Osuit esteeseen! Elämä jäljellä: {player.life}")
+  player.rect.x = WIDTH // 2 - player.rect.width // 2
+  player.rect.y = HEIGHT // 2 - player.rect.height // 2
+  if player.life <= 0:
+    elematLoppu(player_name=player_name, score=score, main_menu=main_menu, player_color=player_color)
 
 def elematLoppu(player_name, score, main_menu, player_color):
   pygame.mixer.music.stop()
@@ -305,11 +300,9 @@ def switch_level(score, level, player, player_speed, WIDTH, HEIGHT):
     level_up = True
     player_speed += 1.5
     print(f"Taso: {level}, Pelaajan nopeus: {player_speed}")
-
     player.speed = player_speed
 
-    player.rect.x = WIDTH // 2 - player.rect.width // 2
-    player.rect.y = HEIGHT // 2 - player.rect.height // 2
+    player.startPosition()
 
     obstacles = generate_obstacles(level, WIDTH, HEIGHT, player)
     
